@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+{% load static humanize i18n %}
+
+{% block title %}{{ car.name }} {{ car.year }} — {% trans "купить в AvtoBereke" %}{% endblock %}
+
+{% block content %}
+<section class="car-detail-page">
+  <div class="container">
+    
+    <!-- Хлебные крошки и возврат -->
+    <div class="detail-top-nav">
+      <a class="back-link" href="{% url 'cars' %}">
+        <i class="fa-solid fa-arrow-left"></i> <span>{% trans "Назад в каталог" %}</span>
+      </a>
+      <nav class="breadcrumbs" aria-label="{% trans 'Хлебные крошки' %}">
+        <a href="{% url 'home' %}">{% trans "Главная" %}</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="{% url 'cars' %}">{% trans "Автомобили" %}</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>{{ car.name }}</span>
+      </nav>
+    </div>
+
+    <!-- Заголовок, бейджи, цена и контакты владельца -->
+    <div class="detail-header">
+      <div class="detail-header__info">
+        <div class="detail-badges">
+          <span class="badge badge--stock"><i class="fa-solid fa-circle-check"></i> <span>{% trans "В наличии" %}</span></span>
+          {% if car.customs %}<span class="badge badge--customs"><i class="fa-solid fa-shield-halved"></i> {{ car.customs }}</span>{% endif %}
+          <span class="badge badge--year">{{ car.year }}</span>
+        </div>
+        <h1>{{ car.name }}</h1>
+        <p class="detail-header__subtitle">{{ car.engine }} • {{ car.gearbox }} • {{ car.drive }} • {{ car.mileage }}</p>
+      </div>
+
+      <div class="detail-header__pricing">
+        <div class="price-block">
+          <span class="price-block__label">{% trans "Стоимость автомобиля" %}</span>
+          <strong class="detail-price price-block__val" data-usd="{{ car.price }}">${{ car.price|intcomma }}</strong>
+        </div>
+        
+        <!-- Кнопки связи (Прямой звонок / WhatsApp) -->
+        <div class="detail-header__actions">
+          
+          <!-- Синяя кнопка: Прямой звонок -->
+          <a class="btn btn--call btn--lg" href="tel:{{ site_settings.phone_display }}">
+            <i class="fa-solid fa-phone"></i> <span>{% trans "Позвонить владельцу авто" %}</span>
+          </a>
+          
+          <!-- Зелёная кнопка: WhatsApp -->
+          <a class="btn btn--wa btn--lg" href="https://wa.me/{{ site_settings.whatsapp_num }}?text=Здравствуйте!%20Интересует%20{{ car.name|urlencode }}%20{{ car.year }}%20года%20за%20${{ car.price|intcomma }}." target="_blank" rel="noopener">
+            <i class="fa-brands fa-whatsapp"></i> <span>{% trans "Написать в WhatsApp" %}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Основной контент: 2 колонки -->
+    <div class="detail-layout">
+      
+      <!-- Левая колонка: Галерея, Плеер Instagram, Описание -->
+      <div class="detail-main">
+        
+        <!-- Галерея фото -->
+        <div class="detail-gallery">
+          <div class="detail-gallery__hero">
+            {% if car.image %}
+              <img id="mainGalleryImg" src="{{ car.image.url }}" alt="{{ car.name }}">
+            {% else %}
+              <img id="mainGalleryImg" src="{% static 'img/car-placeholder.jpg' %}" alt="{{ car.name }}">
+            {% endif %}
+            <span class="detail-gallery__year-tag">{{ car.year }}</span>
+          </div>
+
+          <div class="detail-gallery__thumbs" id="galleryThumbs">
+            <!-- Превью главного фото -->
+            {% if car.image %}
+            <button type="button" class="thumb-btn is-active" data-img-url="{{ car.image.url }}">
+              <img src="{{ car.image.url }}" alt="{{ car.name }}">
+            </button>
+            {% else %}
+            <button type="button" class="thumb-btn is-active" data-img-url="{% static 'img/car-placeholder.jpg' %}">
+              <img src="{% static 'img/car-placeholder.jpg' %}" alt="{{ car.name }}">
+            </button>
+            {% endif %}
+
+            <!-- Превью из галереи -->
+            {% for photo in car.gallery.all %}
+            <button type="button" class="thumb-btn" data-img-url="{{ photo.image.url }}">
+              <img src="{{ photo.image.url }}" alt="{{ car.name }}">
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Блок перехода на видео/пост в Instagram -->
+        {% if car.instagram_reel_url %}
+        <div class="car-instagram-section">
+          <a href="{{ car.instagram_reel_url }}" target="_blank" rel="noopener" class="btn btn-instagram-video">
+            <i class="fa-brands fa-instagram"></i>
+            <span>{% trans "Посмотрите видео из Instagram" %}</span> <!-- или "Посмотреть видео в Instagram" -->
+          </a>
+        </div>
+        {% endif %}
+
+        <!-- Описание автомобиля (выводится только при наличии текста) -->
+        {% if car.description %}
+        <div class="detail-box">
+          <h2 class="detail-box__title"><i class="fa-solid fa-file-lines"></i> <span>{% trans "Описание автомобиля от владельца" %}</span></h2>
+          <div class="detail-box__content">
+            <div class="desc-text">{{ car.description|safe }}</div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Преимущества салона -->
+        <div class="detail-box">
+          <h2 class="detail-box__title"><i class="fa-solid fa-shield-halved"></i> <span>{% trans "Преимущества покупки в AvtoBereke" %}</span></h2>
+          <div class="benefits-grid">
+            <div class="bcard">
+              <i class="fa-solid fa-gauge-high"></i>
+              <strong>{% trans "Честный пробег" %}</strong>
+              <span>{% trans "Проверяем электронные блоки и сервисную историю" %}</span>
+            </div>
+            <div class="bcard">
+              <i class="fa-solid fa-car-burst"></i>
+              <strong>{% trans "Проверка кузова" %}</strong>
+              <span>{% trans "Осмотр толщиномером и проверка геометрии" %}</span>
+            </div>
+            <div class="bcard">
+              <i class="fa-solid fa-passport"></i>
+              <strong>{% trans "Юридическая чистота" %}</strong>
+              <span>{% trans "Без залогов, арестов и сомнительных историй" %}</span>
+            </div>
+            <div class="bcard">
+              <i class="fa-solid fa-handshake"></i>
+              <strong>{% trans "Помощь с оформлением" %}</strong>
+              <span>{% trans "Быстрое переоформление в ГРС за 30 минут" %}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Правая колонка: Характеристики, Комплектация, Контактный блок -->
+      <aside class="detail-sidebar">
+        
+        <!-- Таблица характеристик -->
+        <div class="detail-box">
+          <h2 class="detail-box__title"><i class="fa-solid fa-sliders"></i> <span>{% trans "Характеристики" %}</span></h2>
+          <dl class="specs-table">
+            <div class="specs-row"><dt>{% trans "Марка" %}</dt><dd><b>{{ car.brand }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Модель" %}</dt><dd><b>{{ car.name }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Год выпуска" %}</dt><dd><b>{{ car.year }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Пробег" %}</dt><dd><b>{{ car.mileage }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Двигатель" %}</dt><dd><b>{{ car.engine }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Топливо" %}</dt><dd><b>{{ car.fuel }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Коробка передач" %}</dt><dd><b>{{ car.gearbox }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Привод" %}</dt><dd><b>{{ car.drive }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Кузов" %}</dt><dd><b>{{ car.body }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Цвет" %}</dt><dd><b>{{ car.color }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Руль" %}</dt><dd><b>{{ car.steering }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Таможня" %}</dt><dd><b>{{ car.customs }}</b></dd></div>
+            <div class="specs-row"><dt>{% trans "Состояние" %}</dt><dd><b>{{ car.condition }}</b></dd></div>
+          </dl>
+        </div>
+
+        <!-- Комплектация и опции -->
+        {% if car.features.all %}
+        <div class="detail-box">
+          <h2 class="detail-box__title"><i class="fa-solid fa-list-check"></i> <span>{% trans "Комплектация и опции" %}</span></h2>
+          <ul class="features-list">
+            {% for feature in car.features.all %}
+            <li><i class="fa-solid fa-circle-check"></i> {{ feature.name }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        <!-- Быстрая связь и консультация менеджера -->
+        <div class="detail-box detail-contact-cta">
+          <span class="cta-subtitle">{% trans "Понравился этот автомобиль?" %}</span>
+          <h3>{% trans "Задайте вопрос эксперту" %}</h3>
+          <p>{% trans "Ответим на любые вопросы, снимем дополнительное видео интересующих узлов и согласуем осмотр." %}</p>
+          <div class="cta-buttons">
+            {% if car.effective_phone %}
+              <a class="btn btn--call btn--lg" href="tel:{{ car.effective_phone }}">
+                <i class="fa-solid fa-phone"></i> <span>{% trans "Позвонить" %}: {{ car.effective_phone }}</span>
+              </a>
+            {% else %}
+              <a class="btn btn--call btn--lg" href="tel:{{ site_settings.whatsapp_num }}">
+                <i class="fa-solid fa-phone"></i> <span>{% trans "Позвонить" %}: {{ site_settings.phone_display }}</span>
+              </a>
+            {% endif %}
+
+            {% if car.effective_whatsapp %}
+              <a class="btn btn--wa btn--lg" href="https://wa.me/{{ car.effective_whatsapp }}?text=Здравствуйте!%20Хочу%20узнать%20подробнее%20про%20{{ car.name|urlencode }}%20{{ car.year }}." target="_blank" rel="noopener">
+                <i class="fa-brands fa-whatsapp"></i> <span>{% trans "Написать в WhatsApp" %}</span>
+              </a>
+            {% else %}
+              <a class="btn btn--wa btn--lg" href="https://wa.me/{{ site_settings.whatsapp_num }}?text=Здравствуйте!%20Хочу%20узнать%20подробнее%20про%20{{ car.name|urlencode }}%20{{ car.year }}." target="_blank" rel="noopener">
+                <i class="fa-brands fa-whatsapp"></i> <span>{% trans "Написать в WhatsApp" %}</span>
+              </a>
+            {% endif %}
+          </div>
+          <div class="cta-location">
+            <i class="fa-solid fa-location-dot"></i>
+            <div>
+              <b>{% trans "Ждём вас на тест-драйв:" %}</b>
+              <span>{{ site_settings.address }}</span>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- Похожие автомобили -->
+    {% if similar_cars %}
+    <div class="similar-cars-section">
+      <h2 class="title">{% trans "Другие автомобили в наличии" %}</h2>
+      <div class="grid">
+        {% for sim in similar_cars %}
+        <article class="car" data-brand="{{ sim.brand }}" data-price="{{ sim.price }}" data-year="{{ sim.year }}" data-fuel="{{ sim.fuel }}" data-gearbox="{{ sim.gearbox }}" data-name="{{ sim.name }}">
+          <a class="car__img" href="{% url 'car_detail' slug=sim.slug %}">
+            <img src="{% if sim.image %}{{ sim.image.url }}{% else %}{% static 'img/car-placeholder.jpg' %}{% endif %}" alt="{{ sim.name }}">
+            <span class="car__year">{{ sim.year }}</span>
+          </a>
+          <div class="car__body">
+            <a href="{% url 'car_detail' slug=sim.slug %}">
+              <h3>{{ sim.name }}</h3>
+            </a>
+            <ul class="car__specs">
+              <li><i class="fa-solid fa-gauge-high"></i> {{ sim.mileage }}</li>
+              <li><i class="fa-solid fa-gas-pump"></i> <span class="spec-fuel">{{ sim.fuel }}</span></li>
+              <li><i class="fa-solid fa-gears"></i> <span class="spec-gb">{{ sim.gearbox }}</span></li>
+            </ul>
+            <div class="car__foot">
+              <strong class="car__price" data-usd="{{ sim.price }}">${{ sim.price|intcomma }}</strong>
+              <div class="car__actions-group">
+                <a class="btn btn--sm" href="{% url 'car_detail' slug=sim.slug %}">{% trans "Подробнее" %}</a>
+              </div>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- Скрипт переключения фото в галерее -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mainImg = document.getElementById('mainGalleryImg');
+    const thumbBtns = document.querySelectorAll('.thumb-btn');
+
+    thumbBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const newUrl = this.getAttribute('data-img-url');
+            if (newUrl && mainImg) {
+                mainImg.src = newUrl;
+            }
+            thumbBtns.forEach(b => b.classList.remove('is-active'));
+            this.classList.add('is-active');
+        });
+    });
+});
+</script>
+{% endblock %}

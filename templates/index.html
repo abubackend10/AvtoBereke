@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static humanize i18n %}
+
+{% block content %}
+<!-- Главный экран (Hero) -->
+<section class="hero">
+  <div class="container hero__layout">
+    <div class="hero__in">
+      <span class="hero__eyebrow">
+        <i class="fa-solid fa-crown"></i> 
+        <span>{% trans "AvtoBereke — Премиальный автосалон в Оше" %}</span>
+      </span>
+
+      <h1>
+        <span class="brand-avto">Avto</span><span class="brand-bereke">Bereke</span>
+        <br>
+        <span>{{ hero_section.title }}</span>
+      </h1>
+
+      <p>{{ hero_section.description|safe}}</p>
+
+      <div class="hero__actions">
+        <a href="{% url 'cars' %}" class="btn btn--lg">
+          <span>{% trans "Смотреть автомобили" %}</span> 
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+
+        <a href="https://wa.me/{{ contact_settings.whatsapp_num }}" class="hero__contact" target="_blank" rel="noopener">
+          <i class="fa-brands fa-whatsapp"></i> 
+          <span>{% trans "Получить консультацию" %}</span>
+        </a>
+      </div>
+
+      <!-- Статистика внутри Hero -->
+      <div class="hero__stats">
+        {% for stat in statistics_items|slice:":3" %}
+          <div class="hstat">
+            <i class="{{ stat.icon_class }}"></i>
+            <div>
+              <b class="counter" data-target="{{ stat.value }}">{{ stat.value }}</b>
+              <span>{{ stat.title }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Секция рекомендуемых автомобилей -->
+<section class="section recommended-section">
+  <div class="container">
+    
+    <!-- Шапка секции -->
+    <div class="section-header" style="margin-bottom: 24px;">
+      <h2 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 6px;">
+        {% trans "Рекомендуемые автомобили" %}
+      </h2>
+      <p style="color: #9ca3af; font-size: 15px;">
+        {% trans "Лучшие предложения недели, отобранные специально для вас" %}
+      </p>
+    </div>
+
+    <!-- Сетка карточек -->
+    {% if recommended_cars %}
+    <div class="grid" id="grid">
+      {% for car in recommended_cars %}
+      <article class="car" style="position: relative;">
+        
+        <!-- Бейдж рекомендации -->
+        <span class="car-badge" style="position: absolute; top: 12px; left: 12px; background: #2563eb; color: #fff; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 6px; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+          {% trans "ТОП" %}
+        </span>
+
+        <a class="car__img" href="{% url 'car_detail' slug=car.slug %}">
+          <img src="{% if car.image %}{{ car.image.url }}{% else %}{% static 'img/car-placeholder.jpg' %}{% endif %}" alt="{{ car.name }}">
+          <span class="car__year">{{ car.year }}</span>
+        </a>
+        
+        <div class="car__body">
+          <a href="{% url 'car_detail' slug=car.slug %}">
+            <h3>{% if car.brand %}{{ car.brand.name }} {% endif %}{{ car.name }}</h3>
+          </a>
+          
+          <ul class="car__specs">
+            <li><i class="fa-solid fa-gauge-high"></i> {{ car.mileage }}</li>
+            <li><i class="fa-solid fa-gas-pump"></i> <span class="spec-fuel">{% if car.fuel %}{{ car.fuel.name }}{% else %}-{% endif %}</span></li>
+            <li><i class="fa-solid fa-gears"></i> <span class="spec-gb">{% if car.gearbox %}{{ car.gearbox.name }}{% else %}-{% endif %}</span></li>
+          </ul>
+          
+          <div class="car__foot">
+            <strong class="car__price" data-usd="{{ car.price }}">${{ car.price|intcomma }}</strong>
+            <div class="car__actions-group">
+              <a class="btn btn--sm" href="{% url 'car_detail' slug=car.slug %}">{% trans "Подробнее" %}</a>
+            </div>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    
+    {% else %}
+    <div class="empty-catalog-card" style="text-align: center; padding: 40px; background: #1f2937; border-radius: 12px;">
+      <p style="color: #9ca3af;">{% trans "Пока нет рекомендуемых автомобилей." %}</p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- Секция общей статистики -->
+<section class="stats">
+  <div class="container stats__grid">
+    {% for stat in statistics_items %}
+      <div class="stat">
+        <i class="{{ stat.icon_class }}"></i>
+        <div class="stat__num counter" data-target="{{ stat.value }}">{{ stat.value }}</div>
+        <p>{{ stat.title }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Секция обратной связи / призыва к действию -->
+<section class="home-contact">
+  <div class="container">
+    <div class="home-contact__inner">
+      <div class="home-contact__copy">
+        <span class="section-kicker">{% trans "Готовы найти свой автомобиль?" %}</span>
+        <h2>{% trans "Расскажите, что вы ищете" %}</h2>
+        <p>{% trans "Подскажем варианты, ответим на вопросы и поможем сделать следующий шаг — без обязательств." %}</p>
+      </div>
+      
+      <a class="btn btn--lg home-contact__button" href="https://wa.me/{{ site_settings.whatsapp_num }}" target="_blank" rel="noopener">
+        <i class="fa-brands fa-whatsapp"></i> 
+        <span>{% trans "Написать нам" %}</span>
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

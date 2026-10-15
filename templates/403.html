@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Доступ закрыт" %} — AvtoBereke{% endblock %}
+
+{% block content %}
+<section class="error-page">
+  <div class="container error-page__inner">
+    <div class="error-page__visual" aria-hidden="true">
+      <span class="error-page__orbit"></span>
+      <i class="fa-solid fa-lock"></i>
+      <span class="error-page__code">403</span>
+    </div>
+    <p class="error-page__eyebrow">{% trans "У этой дороги есть шлагбаум" %}</p>
+    <h1>{% trans "Сюда пока нельзя" %}</h1>
+    <p class="error-page__text">{% trans "У вас нет доступа к этой странице. Но посмотреть автомобили и связаться с нами можно без пропуска." %}</p>
+    <div class="error-page__actions">
+      <a class="btn btn--lg" href="{% url 'home' %}"><i class="fa-solid fa-house"></i> {% trans "На главную" %}</a>
+      <a class="btn btn--ghost btn--lg" href="{% url 'cars' %}">{% trans "Смотреть автомобили" %}</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

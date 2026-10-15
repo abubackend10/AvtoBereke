@@ -1,0 +1,530 @@
+# Kyrgyz translation for AvtoBereke.
+# Copyright (C) 2026
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-14 16:33+0600\n"
+"PO-Revision-Date: 2026-10-14 16:35+0600\n"
+"Last-Translator: Abubakr\n"
+"Language-Team: Kyrgyz\n"
+"Language: ky\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\core\settings\settings.py:116
+msgid "Русский"
+msgstr "Русский"
+
+#: .\core\settings\settings.py:117
+msgid "Кыргызча"
+msgstr "Кыргызча"
+
+#: .\core\settings\settings.py:118
+msgid "O‘zbekcha"
+msgstr "O‘zbekcha"
+
+#: .\templates\400.html:4
+msgid "Неверный запрос"
+msgstr "Ката сурам"
+
+#: .\templates\400.html:14
+msgid "Похоже, запрос свернул не туда"
+msgstr "Сурам туура эмес багытка кетип калды окшойт"
+
+#: .\templates\400.html:15
+msgid "Не удалось понять запрос"
+msgstr "Сурамды түшүнүү мүмкүн болгон жок"
+
+#: .\templates\400.html:16
+msgid ""
+"Проверьте адрес страницы и попробуйте ещё раз. Если ошибка повторяется, "
+"начните с главной — там маршрут всегда известен."
+msgstr ""
+"Баракчанын дарегин текшерип, кайра аракет кылыңыз. Эгер ката кайталанса, "
+"башкы баракчадан баштаңыз — ал жерде багыт дайыма белгилүү."
+
+#: .\templates\400.html:18 .\templates\403.html:18 .\templates\404.html:18
+#: .\templates\500.html:18
+msgid "На главную"
+msgstr "Башкы баракчага"
+
+#: .\templates\400.html:19 .\templates\403.html:19 .\templates\404.html:19
+#: .\templates\500.html:19 .\templates\index.html:24
+msgid "Смотреть автомобили"
+msgstr "Автоунааларды көрүү"
+
+#: .\templates\403.html:4
+msgid "Доступ закрыт"
+msgstr "Кирүүгө тыюу салынган"
+
+#: .\templates\403.html:14
+msgid "У этой дороги есть шлагбаум"
+msgstr "Бул жолдо шлагбаум бар"
+
+#: .\templates\403.html:15
+msgid "Сюда пока нельзя"
+msgstr "Бул жерге азырынча кирүүгө болбойт"
+
+#: .\templates\403.html:16
+msgid ""
+"У вас нет доступа к этой странице. Но посмотреть автомобили и связаться с "
+"нами можно без пропуска."
+msgstr ""
+"Сизде бул баракчага кирүү укугу жок. Бирок автоунааларды көрүү жана биз менен "
+"байланышуу үчүн уруксат кагазы талап кылынбайт."
+
+#: .\templates\404.html:4
+msgid "Страница не найдена"
+msgstr "Баракча табылган жок"
+
+#: .\templates\404.html:14
+msgid "Кажется, мы свернули не туда"
+msgstr "Туура эмес жакка бурулуп кеттик окшойт"
+
+#: .\templates\404.html:15
+msgid "Такой страницы нет"
+msgstr "Мындай баракча жок"
+
+#: .\templates\404.html:16
+msgid ""
+"Возможно, адрес изменился или страница уехала. Давайте найдём для вас другой "
+"маршрут."
+msgstr ""
+"Мүмкүн, дарек өзгөргөн же баракча жылдырылган. Келиңиз, сиз үчүн башка "
+"багыт табабыз."
+
+#: .\templates\500.html:4
+msgid "Что-то пошло не так"
+msgstr "Катачылык кетти"
+
+#: .\templates\500.html:14
+msgid "Небольшая остановка в пути"
+msgstr "Жолдогу кичинекей аялдама"
+
+#: .\templates\500.html:15
+msgid "Мы уже разбираемся"
+msgstr "Биз муну чечип жатабыз"
+
+#: .\templates\500.html:16
+msgid ""
+"На сайте временная техническая неполадка. Попробуйте обновить страницу чуть "
+"позже или пока загляните в каталог."
+msgstr ""
+"Сайтта убактылуу техникалык мүчүлүштүк бар. Баракчаны бир аз калыбыраак "
+"жаңылап көрүңүз же каталогду карап туруңуз."
+
+#: .\templates\base.html:25 .\templates\base.html:70
+msgid "AvtoBereke — главная"
+msgstr "AvtoBereke — башкы баракча"
+
+#: .\templates\base.html:36 .\templates\base.html:83 .\templates\base.html:113
+#: .\templates\car_detail.html:16
+msgid "Главная"
+msgstr "Башкы баракча"
+
+#: .\templates\base.html:37 .\templates\base.html:84 .\templates\base.html:118
+#: .\templates\car_detail.html:18 .\templates\cars.html:4
+#: .\templates\cars.html:9
+msgid "Автомобили"
+msgstr "Автоунаалар"
+
+#: .\templates\base.html:38 .\templates\base.html:85 .\templates\base.html:89
+#: .\templates\base.html:128 .\templates\contacts.html:4
+#: .\templates\contacts.html:10
+msgid "Контакты"
+msgstr "Байланыш"
+
+#: .\templates\base.html:50 .\templates\base.html:131 .\templates\base.html:133
+#: .\templates\base.html:144
+msgid "Настройки"
+msgstr "Ырастоолор"
+
+#: .\templates\base.html:82
+msgid "Меню"
+msgstr "Меню"
+
+#: .\templates\base.html:105
+msgid "Все права защищены."
+msgstr "Бардык укуктар корголгон."
+
+#: .\templates\base.html:110
+msgid "Мобильная навигация"
+msgstr "Мобилдик навигация"
+
+#: .\templates\base.html:146
+msgid "Закрыть"
+msgstr "Жабуу"
+
+#: .\templates\base.html:154
+msgid "Язык сайта"
+msgstr "Сайттын тили"
+
+#: .\templates\base.html:197
+msgid "Валюта цен"
+msgstr "Баанын валютасы"
+
+#: .\templates\base.html:203
+msgid "Доллар США"
+msgstr "АКШ доллары"
+
+#: .\templates\base.html:211
+msgid "Кыргыз сом"
+msgstr "Кыргыз сому"
+
+#: .\templates\base.html:219
+msgid "Российский рубль"
+msgstr "Россия рубли"
+
+#: .\templates\base.html:229
+msgid "Готово"
+msgstr "Даяр"
+
+#: .\templates\car_detail.html:4
+msgid "купить в AvtoBereke"
+msgstr "AvtoBereke'ден сатып алуу"
+
+#: .\templates\car_detail.html:13
+msgid "Назад в каталог"
+msgstr "Каталогго кайтуу"
+
+#: .\templates\car_detail.html:15
+msgid "Хлебные крошки"
+msgstr "Навигация"
+
+#: .\templates\car_detail.html:28
+msgid "В наличии"
+msgstr "Сатууда бар"
+
+#: .\templates\car_detail.html:38
+msgid "Стоимость автомобиля"
+msgstr "Автоунаанын баасы"
+
+#: .\templates\car_detail.html:47
+msgid "Позвонить владельцу авто"
+msgstr "Ээсине чалуу"
+
+#: .\templates\car_detail.html:52 .\templates\car_detail.html:198
+#: .\templates\car_detail.html:202
+msgid "Написать в WhatsApp"
+msgstr "WhatsApp'ка жазуу"
+
+#: .\templates\car_detail.html:101
+msgid "Instagram'da videoni ko'rish"
+msgstr "Instagram'дан видеону көрүү"
+
+#: .\templates\car_detail.html:109
+msgid "Описание автомобиля от владельца"
+msgstr "Ээсинен автоунаанын сүрөттөмөсү"
+
+#: .\templates\car_detail.html:118
+msgid "Преимущества покупки в AvtoBereke"
+msgstr "AvtoBereke'ден сатып алуунун артыкчылыктары"
+
+#: .\templates\car_detail.html:122
+msgid "Честный пробег"
+msgstr "Чынчыл жүрүлгөн аралык (пробег)"
+
+#: .\templates\car_detail.html:123
+msgid "Проверяем электронные блоки и сервисную историю"
+msgstr "Электрондук блокторду жана сервистик тарыхын текшеребиз"
+
+#: .\templates\car_detail.html:127
+msgid "Проверка кузова"
+msgstr "Кузовду текшерүү"
+
+#: .\templates\car_detail.html:128
+msgid "Осмотр толщиномером и проверка геометрии"
+msgstr "Калыңдык өлчөгүч менен кароо жана геометриясын текшерүү"
+
+#: .\templates\car_detail.html:132
+msgid "Юридическая чистота"
+msgstr "Юридикалык тазалык"
+
+#: .\templates\car_detail.html:133
+msgid "Без залогов, арестов и сомнительных историй"
+msgstr "Күрөөсүз, камаксыз жана күмөндүү тарыхсыз"
+
+#: .\templates\car_detail.html:137
+msgid "Помощь с оформлением"
+msgstr "Каттоого жардам берүү"
+
+#: .\templates\car_detail.html:138
+msgid "Быстрое переоформление в ГРС за 30 минут"
+msgstr "30 мүнөттө мамлекеттик каттоо кызматында тез кайра каттоо"
+
+#: .\templates\car_detail.html:150
+msgid "Характеристики"
+msgstr "Мүнөздөмөлөрү"
+
+#: .\templates\car_detail.html:152 .\templates\cars.html:25
+msgid "Марка"
+msgstr "Маркасы"
+
+#: .\templates\car_detail.html:153
+msgid "Модель"
+msgstr "Модели"
+
+#: .\templates\car_detail.html:154
+msgid "Год выпуска"
+msgstr "Чыгарылган жылы"
+
+#: .\templates\car_detail.html:155
+msgid "Пробег"
+msgstr "Жүрүлгөн аралыгы"
+
+#: .\templates\car_detail.html:156
+msgid "Двигатель"
+msgstr "Кыймылдаткычы"
+
+#: .\templates\car_detail.html:157 .\templates\cars.html:50
+msgid "Топливо"
+msgstr "Күйүүчү май"
+
+#: .\templates\car_detail.html:158
+msgid "Коробка передач"
+msgstr "Өткөргүч кутусу"
+
+#: .\templates\car_detail.html:159
+msgid "Привод"
+msgstr "Дөңгөлөк жүргүзгүч (привод)"
+
+#: .\templates\car_detail.html:160
+msgid "Кузов"
+msgstr "Кузову"
+
+#: .\templates\car_detail.html:161
+msgid "Цвет"
+msgstr "Түсү"
+
+#: .\templates\car_detail.html:162
+msgid "Руль"
+msgstr "Рулу"
+
+#: .\templates\car_detail.html:163
+msgid "Таможня"
+msgstr "Бажы (бажыдан өткөн)"
+
+#: .\templates\car_detail.html:164
+msgid "Состояние"
+msgstr "Абалы"
+
+#: .\templates\car_detail.html:171
+msgid "Комплектация и опции"
+msgstr "Комплектациясы жана опциялары"
+
+#: .\templates\car_detail.html:182
+msgid "Понравился этот автомобиль?"
+msgstr "Бул автоунаа жактыбы?"
+
+#: .\templates\car_detail.html:183
+msgid "Задайте вопрос эксперту"
+msgstr "Адиске суроо бериңиз"
+
+#: .\templates\car_detail.html:184
+msgid ""
+"Ответим на любые вопросы, снимем дополнительное видео интересующих узлов и "
+"согласуем осмотр."
+msgstr ""
+"Бардык суроолорго жооп беребиз, сизди кызыктырган тетиктерди видеого тартып "
+"жинап беребиз жана кароону макулдашабыз."
+
+#: .\templates\car_detail.html:188 .\templates\car_detail.html:192
+msgid "Позвонить"
+msgstr "Чалуу"
+
+#: .\templates\car_detail.html:209
+msgid "Ждём вас на тест-драйв:"
+msgstr "Сизди тест-драйвка күтөбүз:"
+
+#: .\templates\car_detail.html:222
+msgid "Другие автомобили в наличии"
+msgstr "Сатууда бар башка автоунаалар"
+
+#: .\templates\car_detail.html:242 .\templates\cars.html:130
+#: .\templates\index.html:78
+msgid "Подробнее"
+msgstr "Кененирээк"
+
+#: .\templates\cars.html:10
+msgid "Найдите свой автомобиль с помощью фильтра"
+msgstr "Чыпканын (фильтр) жардамы менен өз автоунааңызды табыңыз"
+
+#: .\templates\cars.html:20
+msgid "Поиск"
+msgstr "Издөө"
+
+#: .\templates\cars.html:21
+msgid "Марка или модель"
+msgstr "Маркасы же модели"
+
+#: .\templates\cars.html:27
+msgid "Все"
+msgstr "Бардыгы"
+
+#: .\templates\cars.html:39
+msgid "Коробка"
+msgstr "Коробкасы"
+
+#: .\templates\cars.html:41
+msgid "Любая"
+msgstr "Каалагандай"
+
+#: .\templates\cars.html:42
+msgid "Автомат"
+msgstr "Автомат"
+
+#: .\templates\cars.html:43
+msgid "Механика"
+msgstr "Механика"
+
+#: .\templates\cars.html:44
+msgid "Вариатор"
+msgstr "Вариатор"
+
+#: .\templates\cars.html:45
+msgid "Робот"
+msgstr "Робот"
+
+#: .\templates\cars.html:52
+msgid "Любое"
+msgstr "Каалагандай"
+
+#: .\templates\cars.html:53
+msgid "Бензин"
+msgstr "Бензин"
+
+#: .\templates\cars.html:54
+msgid "Дизель"
+msgstr "Дизель"
+
+#: .\templates\cars.html:55
+msgid "Гибрид"
+msgstr "Гибрид"
+
+#: .\templates\cars.html:56
+msgid "Подключаемый гибрид"
+msgstr "Заряддалуучу гибрид"
+
+#: .\templates\cars.html:57
+msgid "Электромобиль"
+msgstr "Электромобиль"
+
+#: .\templates\cars.html:58
+msgid "Газ"
+msgstr "Газ"
+
+#: .\templates\cars.html:59
+msgid "Газ-Бензин"
+msgstr "Газ-Бензин"
+
+#: .\templates\cars.html:64
+msgid "Год от"
+msgstr "Жылы (баштап)"
+
+#: .\templates\cars.html:69
+msgid "Цена до"
+msgstr "Баасы (чейин)"
+
+#: .\templates\cars.html:74
+msgid "Сортировка"
+msgstr "Иреттөө"
+
+#: .\templates\cars.html:76
+msgid "По умолчанию"
+msgstr "Демейки боюнча"
+
+#: .\templates\cars.html:77
+msgid "Цена ↑"
+msgstr "Баасы ↑"
+
+#: .\templates\cars.html:78
+msgid "Цена ↓"
+msgstr "Баасы ↓"
+
+#: .\templates\cars.html:79
+msgid "Новее"
+msgstr "Жаңыраактар"
+
+#: .\templates\cars.html:85
+msgid "Сбросить"
+msgstr "Тазалоо"
+
+#: .\templates\cars.html:90
+msgid "Найдено:"
+msgstr "Табылды:"
+
+#: .\templates\cars.html:96
+msgid "По вашим фильтрам ничего не найдено"
+msgstr "Сиз тандаган чыпкалар боюнча эч нерсе табылган жок"
+
+#: .\templates\cars.html:97
+msgid "Попробуйте изменить параметры поиска или сбросить фильтры."
+msgstr "Издөө параметрлерин өзгөртүп же чыпкаларды тазалап көрүңүз."
+
+#: .\templates\cars.html:144
+msgid "В каталоге пока нет доступных автомобилей"
+msgstr "Каталогдо азырынча автоунаалар жок"
+
+#: .\templates\cars.html:145
+msgid "Следите за обновлениями, скоро здесь появятся новые поступления."
+msgstr "Жаңыланууларды байкап туруңуз, жакында жаңы автоунаалар кошулат."
+
+#: .\templates\contacts.html:11
+msgid "Свяжитесь с нами любым удобным способом"
+msgstr "Биз менен өзүңүзгө ңңгайлуу ыкма аркылуу байланышыңыз"
+
+#: .\templates\contacts.html:25
+msgid "Телефон"
+msgstr "Телефон"
+
+#: .\templates\contacts.html:81
+msgid "YouTube канал"
+msgstr "YouTube каналы"
+
+#: .\templates\contacts.html:91
+msgid "Адрес"
+msgstr "Дареги"
+
+#: .\templates\contacts.html:105 .\templates\contacts.html:113
+msgid "Карта"
+msgstr "Карта"
+
+#: .\templates\index.html:11
+msgid "AvtoBereke — Премиальный автосалон в Оше"
+msgstr "AvtoBereke — Ош шаарындагы премиум автосалон"
+
+#: .\templates\index.html:30
+msgid "Получить консультацию"
+msgstr "Кеңеш алуу"
+
+#: .\templates\index.html:54
+msgid "Рекомендуемые авто"
+msgstr "Сунушталган автоунаалар"
+
+#: .\templates\index.html:89
+msgid "В данный момент нет рекомендуемых автомобилей."
+msgstr "Учурда сунушталган автоунаалар жок."
+
+#: .\templates\index.html:113
+msgid "Готовы найти свой автомобиль?"
+msgstr "Өз автоунааңызды табууга даярсызбы?"
+
+#: .\templates\index.html:114
+msgid "Расскажите, что вы ищете"
+msgstr "Эмне издеп жатканыңызды айтыңыз"
+
+#: .\templates\index.html:115
+msgid ""
+"Подскажем варианты, ответим на вопросы и поможем сделать следующий шаг — без "
+"обязательств."
+msgstr ""
+"Варианттарды сунуштайбыз, суроолорго жооп беребиз жана кийинки кадамды жасоого "
+"жардам беребиз — милдеттенмелерсиз."
+
+#: .\templates\index.html:120
+msgid "Написать нам"
+msgstr "Бизге жазуу"

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Неверный запрос" %} — AvtoBereke{% endblock %}
+
+{% block content %}
+<section class="error-page">
+  <div class="container error-page__inner">
+    <div class="error-page__visual" aria-hidden="true">
+      <span class="error-page__orbit"></span>
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span class="error-page__code">400</span>
+    </div>
+    <p class="error-page__eyebrow">{% trans "Похоже, запрос свернул не туда" %}</p>
+    <h1>{% trans "Не удалось понять запрос" %}</h1>
+    <p class="error-page__text">{% trans "Проверьте адрес страницы и попробуйте ещё раз. Если ошибка повторяется, начните с главной — там маршрут всегда известен." %}</p>
+    <div class="error-page__actions">
+      <a class="btn btn--lg" href="{% url 'home' %}"><i class="fa-solid fa-house"></i> {% trans "На главную" %}</a>
+      <a class="btn btn--ghost btn--lg" href="{% url 'cars' %}">{% trans "Смотреть автомобили" %}</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

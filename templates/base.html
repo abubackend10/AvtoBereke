@@ -1,0 +1,304 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'ru' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site_settings.title }}{% endblock %}</title>
+  
+  {% if site_settings.favicon %}
+    <link rel="icon" type="image/x-icon" href="{{ site_settings.favicon.url }}">
+  {% else %}
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+  {% endif %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<header class="header">
+  <div class="container header__in">
+    <!-- Логотип -->
+    <a href="{% url 'home' %}" class="logo" aria-label="{% trans 'AvtoBereke — главная' %}">
+      {% if site_settings.logo %}
+        <img class="logo__image" src="{{ site_settings.logo.url }}" alt="AvtoBereke">
+      {% else %}
+        <img class="logo__image" src="{% static 'img/AvtoBereke.jpg' %}" alt="AvtoBereke">
+      {% endif %}
+      <span class="logo__name"><span class="brand-avto">Avto</span><span class="brand-bereke">Bereke</span></span>
+    </a>
+
+    <!-- Навигация -->
+    <nav class="nav" id="nav">
+      <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">{% trans "Главная" %}</a>
+      <a href="{% url 'cars' %}" class="{% if request.resolver_match.url_name == 'cars' %}active{% endif %}">{% trans "Автомобили" %}</a>
+      <a href="{% url 'contacts' %}" class="{% if request.resolver_match.url_name == 'contacts' %}active{% endif %}">{% trans "Контакты" %}</a>
+      <a href="https://wa.me/{{ site_settings.whatsapp_num }}" class="btn btn--wa nav__wa" target="_blank" rel="noopener">
+        <i class="fa-brands fa-whatsapp"></i> {{ site_settings.phone_display }}
+      </a>
+    </nav>
+
+    <!-- Элементы управления в шапке -->
+    <div class="header__ctrls">
+      <a href="https://wa.me/{{ site_settings.whatsapp_num }}" class="btn btn--wa header__phone" target="_blank" rel="noopener">
+        <i class="fa-brands fa-whatsapp"></i> {{ site_settings.phone_display }}
+      </a>
+
+      <button class="settings-btn" id="openSettingsBtn" type="button" aria-label="{% trans 'Настройки' %}" title="{% trans 'Настройки' %}">
+        <i class="fa-solid fa-gear"></i>
+        <!-- Динамический вывод текущего языка (RU, KG, UZ) -->
+        <span class="settings-btn__text" id="settingsBtnText">USD · {{ LANGUAGE_CODE|upper }}</span>
+      </button>
+
+      <a href="https://wa.me/{{ site_settings.whatsapp_num }}" class="header__wa" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- Основной контент -->
+<main>{% block content %}{% endblock %}</main>
+
+<!-- Подвал -->
+<footer class="footer">
+  <div class="container footer__grid">
+    <div>
+      <a href="{% url 'home' %}" class="logo" aria-label="{% trans 'AvtoBereke — главная' %}">
+        {% if site_settings.logo %}
+          <img class="logo__image" src="{{ site_settings.logo.url }}" alt="AvtoBereke">
+        {% else %}
+          <img class="logo__image" src="{% static 'img/AvtoBereke.jpg' %}" alt="AvtoBereke">
+        {% endif %}
+        <span class="logo__name"><span class="brand-avto">Avto</span><span class="brand-bereke">Bereke</span></span>
+      </a>
+      <div class="muted">{{ site_settings.description|safe }}</div>
+    </div>
+
+    <div>
+      <h4>{% trans "Меню" %}</h4>
+      <a href="{% url 'home' %}">{% trans "Главная" %}</a>
+      <a href="{% url 'cars' %}">{% trans "Автомобили" %}</a>
+      <a href="{% url 'contacts' %}">{% trans "Контакты" %}</a>
+    </div>
+
+    <div>
+      <h4>{% trans "Контакты" %}</h4>
+      <a href="tel:{{ site_settings.whatsapp_num }}"><i class="fa-solid fa-phone"></i> {{ site_settings.phone_display }}</a>
+      <span><i class="fa-solid fa-location-dot"></i> {{ site_settings.address }}</span>
+      
+      <!-- Социальные сети -->
+      <div class="socials">
+        <a href="{{ site_settings.instagram|default:'#' }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="{{ site_settings.telegram|default:'#' }}" target="_blank" rel="noopener" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+        <a href="https://wa.me/{{ site_settings.whatsapp_num }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="{{ site_settings.tiktok|default:'#' }}" target="_blank" rel="noopener" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="{{ site_settings.youtube|default:'#' }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    © {% now "Y" %} <span class="brand-avto">Avto</span><span class="brand-bereke">Bereke</span>. {% trans "Все права защищены." %}
+  </div>
+</footer>
+
+<!-- Мобильная нижняя навигация -->
+<nav class="bottom-nav" id="bottomNav" aria-label="{% trans 'Мобильная навигация' %}">
+  <a href="{% url 'home' %}" class="bottom-nav__item {% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">
+    <div class="bottom-nav__icon-wrap"><i class="fa-solid fa-house bottom-nav__icon"></i></div>
+    <span class="bottom-nav__label">{% trans "Главная" %}</span>
+  </a>
+
+  <a href="{% url 'cars' %}" class="bottom-nav__item {% if request.resolver_match.url_name == 'cars' or request.resolver_match.url_name == 'car_detail' %}is-active{% endif %}">
+    <div class="bottom-nav__icon-wrap"><i class="fa-solid fa-car bottom-nav__icon"></i></div>
+    <span class="bottom-nav__label">{% trans "Автомобили" %}</span>
+  </a>
+
+  <a href="https://wa.me/{{ site_settings.whatsapp_num }}" class="bottom-nav__item bottom-nav__item--wa" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <div class="bottom-nav__icon-wrap"><i class="fa-brands fa-whatsapp bottom-nav__icon"></i></div>
+    <span class="bottom-nav__label">WhatsApp</span>
+  </a>
+
+  <a href="{% url 'contacts' %}" class="bottom-nav__item {% if request.resolver_match.url_name == 'contacts' %}is-active{% endif %}">
+    <div class="bottom-nav__icon-wrap"><i class="fa-solid fa-phone bottom-nav__icon"></i></div>
+    <span class="bottom-nav__label">{% trans "Контакты" %}</span>
+  </a>
+
+  <button type="button" class="bottom-nav__item bottom-nav__item--settings" id="openSettingsBtnMobile" data-open-settings aria-label="{% trans 'Настройки' %}">
+    <div class="bottom-nav__icon-wrap"><i class="fa-solid fa-gear bottom-nav__icon"></i></div>
+    <span class="bottom-nav__label">{% trans "Настройки" %}</span>
+  </button>
+</nav>
+
+<!-- Модальное окно настроек -->
+<div class="settings-modal" id="settingsModal" aria-hidden="true" role="dialog" aria-labelledby="settingsModalTitle">
+  <div class="settings-modal__backdrop" id="settingsModalBackdrop"></div>
+  <div class="settings-modal__dialog">
+    <div class="settings-modal__header">
+      <div class="settings-modal__title-wrap">
+        <i class="fa-solid fa-gear"></i>
+        <h3 id="settingsModalTitle">{% trans "Настройки" %}</h3>
+      </div>
+      <button class="settings-modal__close" id="closeSettingsBtn" type="button" aria-label="{% trans 'Закрыть' %}">&times;</button>
+    </div>
+
+    <div class="settings-modal__body">
+      <!-- Форма смены языка в Django i18n -->
+      <div class="settings-group">
+        <label class="settings-group__label">
+          <i class="fa-solid fa-globe"></i>
+          <span>{% trans "Язык сайта" %}</span>
+        </label>
+        
+        <form action="{% url 'set_language' %}" method="post" id="langForm">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ redirect_to|default:request.path }}">
+          <input name="language" id="selectedLanguageInput" type="hidden" value="{{ LANGUAGE_CODE }}">
+          
+          <div class="settings-options" id="langOptions">
+            <button type="button" class="settings-opt {% if LANGUAGE_CODE == 'ru' %}is-active{% endif %}" data-lang="ru">
+              <span class="settings-opt__badge">RU</span>
+              <div class="settings-opt__details">
+                <span class="settings-opt__name">Русский</span>
+                <span class="settings-opt__code">Русский язык</span>
+              </div>
+              <i class="fa-solid fa-check settings-opt__check"></i>
+            </button>
+
+            <button type="button" class="settings-opt {% if LANGUAGE_CODE == 'ky' %}is-active{% endif %}" data-lang="ky">
+              <span class="settings-opt__badge">KG</span>
+              <div class="settings-opt__details">
+                <span class="settings-opt__name">Кыргызча</span>
+                <span class="settings-opt__code">Кыргыз тили</span>
+              </div>
+              <i class="fa-solid fa-check settings-opt__check"></i>
+            </button>
+
+            <button type="button" class="settings-opt {% if LANGUAGE_CODE == 'uz' %}is-active{% endif %}" data-lang="uz">
+              <span class="settings-opt__badge">UZ</span>
+              <div class="settings-opt__details">
+                <span class="settings-opt__name">O'zbekcha</span>
+                <span class="settings-opt__code">O'zbek tili</span>
+              </div>
+              <i class="fa-solid fa-check settings-opt__check"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Выбор валюты -->
+      <div class="settings-group">
+        <label class="settings-group__label">
+          <i class="fa-solid fa-coins"></i>
+          <span>{% trans "Валюта цен" %}</span>
+        </label>
+        <div class="settings-options settings-options--curr" id="currOptions">
+          <button type="button" class="settings-opt" data-curr="usd">
+            <span class="settings-opt__badge">$</span>
+            <div class="settings-opt__details">
+              <span class="settings-opt__name">{% trans "Доллар США" %}</span>
+              <span class="settings-opt__code">USD ($)</span>
+            </div>
+            <i class="fa-solid fa-check settings-opt__check"></i>
+          </button>
+          <button type="button" class="settings-opt" data-curr="kgs">
+            <span class="settings-opt__badge">⃀</span>
+            <div class="settings-opt__details">
+              <span class="settings-opt__name">{% trans "Кыргыз сом" %}</span>
+              <span class="settings-opt__code">KGS (⃀)</span>
+            </div>
+            <i class="fa-solid fa-check settings-opt__check"></i>
+          </button>
+          <button type="button" class="settings-opt" data-curr="rub">
+            <span class="settings-opt__badge">₽</span>
+            <div class="settings-opt__details">
+              <span class="settings-opt__name">{% trans "Российский рубль" %}</span>
+              <span class="settings-opt__code">RUB (₽)</span>
+            </div>
+            <i class="fa-solid fa-check settings-opt__check"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-modal__footer">
+      <button type="button" class="btn btn--primary settings-modal__save" id="saveSettingsBtn">{% trans "Готово" %}</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async function () {
+    // Выбор языка в модальном окне
+    const langBtns = document.querySelectorAll('#langOptions .settings-opt');
+    const langInput = document.getElementById('selectedLanguageInput');
+    const langForm = document.getElementById('langForm');
+
+    langBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            langBtns.forEach(b => b.classList.remove('is-active'));
+            this.classList.add('is-active');
+            if (langInput) {
+                langInput.value = this.getAttribute('data-lang');
+            }
+        });
+    });
+
+    let rates = {
+        KGS: 89.0,
+        RUB: 95.0
+    };
+
+    try {
+        const response = await fetch('https://api.frankfurter.app/latest?from=USD&to=KGS,RUB');
+        const data = await response.json();
+        if (data && data.rates) {
+            if (data.rates.KGS) rates.KGS = data.rates.KGS;
+            if (data.rates.RUB) rates.RUB = data.rates.RUB;
+        }
+    } catch (error) {
+        console.log('Не удалось загрузить курсы валют, используются дефолтные:', error);
+    }
+
+    function updatePrices() {
+        const currencySelector = document.getElementById('currencySelector') || document.querySelector('select[name="currency"]');
+        const currency = currencySelector ? currencySelector.value : 'USD';
+
+        const priceElements = document.querySelectorAll('.car__price, .detail-price');
+
+        priceElements.forEach(el => {
+            const usdPrice = parseFloat(el.getAttribute('data-usd'));
+            if (isNaN(usdPrice)) return;
+
+            if (currency === 'KGS') {
+                const kgsPrice = Math.round(usdPrice * rates.KGS);
+                el.innerHTML = kgsPrice.toLocaleString('ru-RU') + ' сом';
+            } else if (currency === 'RUB') {
+                const rubPrice = Math.round(usdPrice * rates.RUB);
+                el.innerHTML = rubPrice.toLocaleString('ru-RU') + ' ₽';
+            } else {
+                el.innerHTML = '$' + usdPrice.toLocaleString('ru-RU');
+            }
+        });
+    }
+
+    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+    if (saveSettingsBtn) {
+        saveSettingsBtn.addEventListener('click', function () {
+            updatePrices();
+            if (langForm) {
+                langForm.submit(); // Отправляем форму смены языка Django
+            }
+        });
+    }
+    updatePrices();
+});
+</script>
+
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

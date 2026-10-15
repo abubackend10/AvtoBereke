@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Контакты" %} — AvtoBereke{% endblock %}
+
+{% block content %}
+<!-- Шапка страницы -->
+<section class="page-head">
+  <div class="container">
+    <h1>{% trans "Контакты" %}</h1>
+    <p>{% trans "Свяжитесь с нами любым удобным способом" %}</p>
+  </div>
+</section>
+
+<!-- Основной блок с контактами и картой -->
+<section class="section">
+  <div class="container contacts">
+    <!-- Список контактных карточек -->
+    <div class="contacts__list">
+      <!-- Телефон -->
+      {% if site_settings.phone_display %}
+      <a class="ccard" href="tel:{{ site_settings.whatsapp_num }}">
+        <i class="fa-solid fa-phone"></i>
+        <div>
+          <span>{% trans "Телефон" %}</span>
+          <b>{{ site_settings.phone_display }}</b>
+        </div>
+      </a>
+      {% endif %}
+
+      <!-- WhatsApp -->
+      {% if site_settings.whatsapp_num %}
+      <a class="ccard" href="https://wa.me/{{ site_settings.whatsapp_num }}" target="_blank" rel="noopener">
+        <i class="fa-brands fa-whatsapp"></i>
+        <div>
+          <span>WhatsApp</span>
+          <b>{{ site_settings.phone_display }}</b>
+        </div>
+      </a>
+      {% endif %}
+
+      <!-- Telegram (Автоматически формирует https://t.me/ и показывает @ник) -->
+      {% if site_settings.telegram %}
+      <a class="ccard" href="https://t.me/{{ site_settings.telegram|cut:'@'|cut:'https://t.me/'|cut:'http://t.me/' }}" target="_blank" rel="noopener">
+        <i class="fa-brands fa-telegram"></i>
+        <div>
+          <span>Telegram</span>
+          <b>@{{ site_settings.telegram|cut:'@'|cut:'https://t.me/'|cut:'http://t.me/' }}</b>
+        </div>
+      </a>
+      {% endif %}
+
+      <!-- Instagram (Автоматически формирует https://instagram.com/ и показывает @ник) -->
+      {% if site_settings.instagram %}
+      <a class="ccard" href="https://instagram.com/{{ site_settings.instagram|cut:'@'|cut:'https://instagram.com/'|cut:'http://instagram.com/' }}" target="_blank" rel="noopener">
+        <i class="fa-brands fa-instagram"></i>
+        <div>
+          <span>Instagram</span>
+          <b>@{{ site_settings.instagram|cut:'@'|cut:'https://instagram.com/'|cut:'http://instagram.com/' }}</b>
+        </div>
+      </a>
+      {% endif %}
+
+      <!-- TikTok (Формирует ссылку на профиль и показывает @ник) -->
+      {% if site_settings.tiktok %}
+      <a class="ccard" href="https://tiktok.com/@{{ site_settings.tiktok|cut:'@'|cut:'https://tiktok.com/@'|cut:'https://tiktok.com/'|cut:'http://tiktok.com/' }}" target="_blank" rel="noopener">
+        <i class="fa-brands fa-tiktok"></i>
+        <div>
+          <span>TikTok</span>
+          <b>@{{ site_settings.tiktok|cut:'@'|cut:'https://tiktok.com/@'|cut:'https://tiktok.com/'|cut:'http://tiktok.com/' }}</b>
+        </div>
+      </a>
+      {% endif %}
+
+      <!-- YouTube -->
+      {% if site_settings.youtube %}
+      <a class="ccard" href="{{ site_settings.youtube }}" target="_blank" rel="noopener">
+        <i class="fa-brands fa-youtube"></i>
+        <div>
+          <span>YouTube</span>
+          <b>{% trans "YouTube канал" %}</b>
+        </div>
+      </a>
+      {% endif %}
+
+      <!-- Адрес -->
+      {% if site_settings.address %}
+      <div class="ccard">
+        <i class="fa-solid fa-location-dot"></i>
+        <div>
+          <span>{% trans "Адрес" %}</span>
+          <b>{{ site_settings.address }}</b>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Карта -->
+    <div class="map">
+      {% if site_settings.map_iframe %}
+        {% if "<iframe" in site_settings.map_iframe %}
+          {{ site_settings.map_iframe|safe }}
+        {% else %}
+          <iframe 
+            title="{% trans 'Карта' %}" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"
+            src="{{ site_settings.map_iframe }}">
+          </iframe>
+        {% endif %}
+      {% elif site_settings.address %}
+        <iframe 
+          title="{% trans 'Карта' %}" 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade"
+          src="https://www.google.com/maps?q={{ site_settings.address|urlencode }}&output=embed">
+        </iframe>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

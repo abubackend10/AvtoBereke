@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Страница не найдена" %} — AvtoBereke{% endblock %}
+
+{% block content %}
+<section class="error-page">
+  <div class="container error-page__inner">
+    <div class="error-page__visual error-page__visual--broken" aria-hidden="true">
+      <span class="error-page__orbit"></span>
+      <i class="fa-solid fa-car-burst"></i>
+      <span class="error-page__code">404</span>
+    </div>
+    <p class="error-page__eyebrow">{% trans "Кажется, мы свернули не туда" %}</p>
+    <h1>{% trans "Такой страницы нет" %}</h1>
+    <p class="error-page__text">{% trans "Возможно, адрес изменился или страница уехала. Давайте найдём для вас другой маршрут." %}</p>
+    <div class="error-page__actions">
+      <a class="btn btn--lg" href="{% url 'home' %}"><i class="fa-solid fa-house"></i> {% trans "На главную" %}</a>
+      <a class="btn btn--ghost btn--lg" href="{% url 'cars' %}">{% trans "Смотреть автомобили" %}</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
