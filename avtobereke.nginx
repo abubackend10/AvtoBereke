@@ -1,0 +1,28 @@
+server {
+    listen 80;
+    server_name ваш_домен_или_ip; # Замените на ваш домен или IP-адрес сервера
+
+    client_max_body_size 20M; # Ограничение на размер загружаемых файлов (например, фото машин через админку)
+
+    # Раздача статических файлов (WhiteNoise или Nginx)
+    location /back_static/ {
+        alias /home/ubuntu/AvtoBereke/back_static/;
+        expires 30d;
+    }
+
+    # Раздача медиафайлов (фотографии машин)
+    location /back_media/ {
+        alias /home/ubuntu/AvtoBereke/back_media/;
+        expires 30d;
+    }
+
+    # Перенаправление остальных запросов на Gunicorn через Unix-сокет
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/ubuntu/AvtoBereke/avtobereke.sock;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
