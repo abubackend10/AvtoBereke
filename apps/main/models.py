@@ -43,10 +43,10 @@ class SiteSettings(SingletonModel):
     )
     map_iframe = models.TextField(blank=True, null=True, verbose_name='Ссылка от iframe (Google Maps)')
     
-    instagram = models.CharField(blank=True, null=True, verbose_name="Instagram (Ник)")
-    telegram = models.CharField(blank=True, null=True, verbose_name="Telegram (Ник)")
-    tiktok = models.CharField(blank=True, null=True, verbose_name="TikTok (Ник)")
-    youtube = models.CharField(blank=True, null=True, verbose_name="YouTube (Название канала)")
+    instagram = models.CharField(max_length=200, blank=True, null=True, verbose_name="Instagram (Ник)")
+    telegram = models.CharField(max_length=200, blank=True, null=True, verbose_name="Telegram (Ник)")
+    tiktok = models.CharField(max_length=200, blank=True, null=True, verbose_name="TikTok (Ник)")
+    youtube = models.CharField(max_length=200, blank=True, null=True, verbose_name="YouTube (Название канала)")
 
     class Meta:
         verbose_name = "01) Настройки сайта"
