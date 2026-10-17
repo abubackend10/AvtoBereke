@@ -13,7 +13,8 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
-    prefix_default_language=True
+    path('', include('apps.main.urls')),
+    prefix_default_language=True,
 )
 
 if settings.DEBUG:
