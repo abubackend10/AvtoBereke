@@ -1,6 +1,7 @@
 from core.settings.settings import *
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -35,3 +36,11 @@ USE_X_FORWARDED_PORT = True
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks_enabled=True,
+    )
+}
