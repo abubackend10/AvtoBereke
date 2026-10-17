@@ -3,9 +3,19 @@ services:
     name: avtobereke
     env: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn --config gunicorn.conf.py core.wsgi:application"
+    startCommand: "bash ./start.sh"
+    disk:
+      name: avtobereke-media
+      mountPath: /var/data
+      sizeGB: 1
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.0
       - key: DJANGO_SETTINGS_MODULE
         value: core.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: MEDIA_ROOT
+        value: /var/data

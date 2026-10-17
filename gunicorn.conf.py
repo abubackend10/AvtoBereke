@@ -1,13 +1,12 @@
 import os
-import multiprocessing
 
 # Прослушивание через Unix-сокет (рекомендуется для связки с Nginx) или порт
 port = os.environ.get("PORT", "8000")
 bind = f"0.0.0.0:{port}"
 # Если захотите запустить через порт: bind = "127.0.0.1:8000"
 
-# Количество воркеров (по формуле: 2 * ядра + 1)
-workers = multiprocessing.cpu_count() * 2 + 1
+# Ограничиваем воркеры по умолчанию, чтобы не перегружать небольшие инстансы Render.
+workers = int(os.environ.get("WEB_CONCURRENCY", "2"))
 
 # Количество потоков на один воркер
 threads = 2

@@ -10,13 +10,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-IS_PRODUCTION = os.getenv("PRODUCTION", "False").lower() == "true"
-
-if IS_PRODUCTION:
-    from core.settings.production import *
-else:
-    from core.settings.development import *
-
 THEME_APPS = [
     'jazzmin'
 ]
@@ -126,7 +119,7 @@ MODELTRANSLATION_CUSTOM_FIELDS = ('CKEditor5Field',)
 
 
 MEDIA_URL = '/back_media/'
-MEDIA_ROOT = BASE_DIR / 'back_media/'
+MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", str(BASE_DIR / "back_media")))
 
 
 STATIC_URL = '/back_static/'
@@ -192,3 +185,11 @@ CKEDITOR_5_CONFIGS = {
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
+
+
+IS_PRODUCTION = os.getenv("PRODUCTION", "False").lower() == "true"
+
+if IS_PRODUCTION:
+    from core.settings.production import *
+else:
+    from core.settings.development import *

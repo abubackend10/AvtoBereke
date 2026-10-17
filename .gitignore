@@ -133,6 +133,8 @@ celerybeat.pid
 
 # Окружающая среда
 .env
+.env.*
+!.env.example
 .venv
 окружающая среда/
 венв/
