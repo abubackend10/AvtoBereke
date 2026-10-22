@@ -14,10 +14,15 @@ class Command(BaseCommand):
         email = os.getenv("DJANGO_SUPERUSER_EMAIL", "").strip()
         password = os.getenv("DJANGO_SUPERUSER_PASSWORD", "")
         if not username or not email or not password:
-            raise CommandError(
-                "Set DJANGO_SUPERUSER_USERNAME, DJANGO_SUPERUSER_EMAIL, "
-                "and DJANGO_SUPERUSER_PASSWORD."
+            self.stderr.write(
+                self.style.WARNING(
+                    "Deployment superuser was not created. Set "
+                    "DJANGO_SUPERUSER_USERNAME, DJANGO_SUPERUSER_EMAIL, and "
+                    "DJANGO_SUPERUSER_PASSWORD in the deployment environment "
+                    "to enable admin login."
+                )
             )
+            return
 
         user_model = get_user_model()
         user_field = user_model.USERNAME_FIELD

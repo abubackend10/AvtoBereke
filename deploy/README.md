@@ -14,6 +14,8 @@ Render's assigned port. Set `DJANGO_SUPERUSER_USERNAME`,
 `DJANGO_SUPERUSER_EMAIL`, and `DJANGO_SUPERUSER_PASSWORD` as private Render
 environment variables. Use a unique, strong password and do not commit any of
 these values. The admin page is available at `https://<your-domain>/admin/`.
+If the superuser variables are missing, the web app still starts, but admin
+login will not work until the variables are set and the service is redeployed.
 The project does not import local SQLite data; add site content through the
 live admin after deployment. The Render web plan is configured as free; choose
 the database plan deliberately and review its cost and retention policy before

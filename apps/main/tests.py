@@ -52,6 +52,17 @@ class EnsureSuperuserTests(TestCase):
     @patch.dict(
         os.environ,
         {
+            "DJANGO_SUPERUSER_USERNAME": "",
+            "DJANGO_SUPERUSER_EMAIL": "",
+            "DJANGO_SUPERUSER_PASSWORD": "",
+        },
+    )
+    def test_missing_credentials_warns_without_blocking_deployment(self):
+        call_command("ensure_superuser", verbosity=0)
+
+    @patch.dict(
+        os.environ,
+        {
             "DJANGO_SUPERUSER_USERNAME": "deployment-admin",
             "DJANGO_SUPERUSER_EMAIL": "admin@example.com",
             "DJANGO_SUPERUSER_PASSWORD": "A-long-unique-deployment-password-593!",
