@@ -17,6 +17,11 @@ from .views import cars
 
 
 class DevelopmentErrorPageTests(TestCase):
+    def test_admin_is_available_at_standard_path(self):
+        response = self.client.get("/admin/")
+
+        self.assertEqual(response.status_code, 302)
+
     def test_unknown_url_shows_custom_404_even_with_debug_enabled(self):
         with override_settings(DEBUG=True, SECURE_SSL_REDIRECT=False):
             response = self.client.get("/ru/does-not-exist/")

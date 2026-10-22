@@ -4,7 +4,6 @@ import os
 DEBUG = True
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-ADMIN_URL = "admin/"
 
 ALLOWED_HOSTS = ["*"]
 

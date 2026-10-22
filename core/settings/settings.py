@@ -59,6 +59,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
+ADMIN_URL = 'admin/'
 
 TEMPLATES = [
     {

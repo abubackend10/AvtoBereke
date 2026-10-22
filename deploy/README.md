@@ -12,11 +12,8 @@ The Blueprint builds static assets, applies database migrations, creates the
 deployment superuser if it does not already exist, and starts Gunicorn on
 Render's assigned port. Set `DJANGO_SUPERUSER_USERNAME`,
 `DJANGO_SUPERUSER_EMAIL`, and `DJANGO_SUPERUSER_PASSWORD` as private Render
-environment variables. Set `DJANGO_ADMIN_PATH` to a private token generated
-with `python -c "import secrets; print(secrets.token_urlsafe(32))"`. Use a
-unique, strong password and do not commit any of these values. The admin page
-is available at `https://<your-domain>/<DJANGO_ADMIN_PATH>/`; `/admin/` is not
-the production admin route. Keep this token private.
+environment variables. Use a unique, strong password and do not commit any of
+these values. The admin page is available at `https://<your-domain>/admin/`.
 The project does not import local SQLite data; add site content through the
 live admin after deployment. The Render web plan is configured as free; choose
 the database plan deliberately and review its cost and retention policy before
@@ -29,12 +26,9 @@ Uploaded photos live in Cloudinary, not on the Render web service's filesystem.
 These files target a Linux server running systemd, Nginx, and PostgreSQL. The
 application's production settings require `SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`,
 a persistent `DATABASE_URL`, `CLOUDINARY_URL`, and the three
-`DJANGO_SUPERUSER_*` variables, plus a private `DJANGO_ADMIN_PATH` token of at
-least 32 URL-safe characters. Generate one with
-`python -c "import secrets; print(secrets.token_urlsafe(32))"`. The admin URL is
-`https://<your-domain>/<DJANGO_ADMIN_PATH>/`; `/admin/` is not the production
-admin route. The systemd unit explicitly selects `core.settings.production`
-and creates the superuser before starting Gunicorn.
+`DJANGO_SUPERUSER_*` variables. The admin URL is
+`https://<your-domain>/admin/`. The systemd unit explicitly selects
+`core.settings.production` and creates the superuser before starting Gunicorn.
 
 ## Install
 
@@ -60,8 +54,7 @@ and creates the superuser before starting Gunicorn.
 4. Copy `deploy/avtobereke.env.example` to
    `/etc/avtobereke/avtobereke.env`. Set a unique `SECRET_KEY`, the real
    domain(s), PostgreSQL connection details, `CLOUDINARY_URL`, and unique
-   `DJANGO_SUPERUSER_*` values. Generate and set a private `DJANGO_ADMIN_PATH`
-   using the command above. URL-encode special characters in database
+   `DJANGO_SUPERUSER_*` values. URL-encode special characters in database
    credentials. Restrict the file to root and the application group, for
    example `root:www-data` with mode `640`.
 5. Apply migrations and collect static files. Ensure the application user owns
