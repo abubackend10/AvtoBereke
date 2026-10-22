@@ -1,15 +1,58 @@
 from io import BytesIO
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management import call_command
 from django.test import RequestFactory, SimpleTestCase, TestCase, override_settings
 from PIL import Image
 
 from .models import Car
 from .images import MAX_IMAGE_SIZE, optimize_image_upload
 from .views import cars
+
+
+class DevelopmentErrorPageTests(TestCase):
+    def test_unknown_url_shows_custom_404_even_with_debug_enabled(self):
+        with override_settings(DEBUG=True, SECURE_SSL_REDIRECT=False):
+            response = self.client.get("/ru/does-not-exist/")
+
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(response, "Такой страницы нет", status_code=404)
+
+    def test_missing_car_shows_custom_404_even_with_debug_enabled(self):
+        middleware = [*settings.MIDDLEWARE, "core.middleware.Development404Middleware"]
+        with override_settings(
+            DEBUG=True,
+            SECURE_SSL_REDIRECT=False,
+            MIDDLEWARE=middleware,
+        ):
+            response = self.client.get("/ru/cars/does-not-exist/")
+
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(response, "Такой страницы нет", status_code=404)
+
+
+class EnsureSuperuserTests(TestCase):
+    @patch.dict(
+        os.environ,
+        {
+            "DJANGO_SUPERUSER_USERNAME": "deployment-admin",
+            "DJANGO_SUPERUSER_EMAIL": "admin@example.com",
+            "DJANGO_SUPERUSER_PASSWORD": "A-long-unique-deployment-password-593!",
+        },
+    )
+    def test_creates_superuser_and_is_idempotent(self):
+        call_command("ensure_superuser", verbosity=0)
+        call_command("ensure_superuser", verbosity=0)
+
+        user = get_user_model().objects.get(username="deployment-admin")
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.check_password("A-long-unique-deployment-password-593!"))
 
 
 class ImageOptimizationTests(SimpleTestCase):

@@ -116,3 +116,7 @@ def car_detail_view(request, slug):
 def contacts(request):
     """Страница контактов"""
     return render(request, "contacts.html")
+
+
+def page_not_found(request, unmatched_path=None):
+    return render(request, "404.html", status=404)

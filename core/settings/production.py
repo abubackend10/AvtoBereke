@@ -1,5 +1,6 @@
 from core.settings.settings import *
 import os
+import re
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
 
@@ -8,6 +9,15 @@ DEBUG = False
 SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:
     raise ImproperlyConfigured("Set SECRET_KEY in the production environment.")
+
+admin_path = os.getenv("DJANGO_ADMIN_PATH", "")
+if len(admin_path) < 32 or not re.fullmatch(r"[A-Za-z0-9_-]+", admin_path):
+    raise ImproperlyConfigured(
+        "Set DJANGO_ADMIN_PATH to a secret URL-safe token of at least 32 characters."
+    )
+if admin_path.lower() == "admin":
+    raise ImproperlyConfigured("DJANGO_ADMIN_PATH must not be 'admin'.")
+ADMIN_URL = f"{admin_path}/"
 
 ALLOWED_HOSTS = [
     h.strip()
@@ -28,6 +38,10 @@ if not os.getenv("CLOUDINARY_URL"):
     raise ImproperlyConfigured(
         "Set CLOUDINARY_URL to a persistent media storage service."
     )
+
+STORAGES["default"] = {
+    "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+}
 
 CORS_ALLOWED_ORIGINS = [
     o.strip()

@@ -142,11 +142,6 @@ STORAGES = {
 }
 
 CLOUDINARY_STORAGE = {"SECURE": True}
-if os.getenv("CLOUDINARY_URL"):
-    STORAGES["default"] = {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    }
-
 
 CKEDITOR_5_CONFIGS = {
     'extends': {

@@ -4,10 +4,16 @@ import os
 DEBUG = True
 
 SECRET_KEY = os.getenv("SECRET_KEY")
+ADMIN_URL = "admin/"
 
 ALLOWED_HOSTS = ["*"]
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+MIDDLEWARE = [
+    *MIDDLEWARE,
+    "core.middleware.Development404Middleware",
+]
 
 DATABASES = {
     'default': {

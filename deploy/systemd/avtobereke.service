@@ -10,6 +10,7 @@ Group=www-data
 WorkingDirectory=/srv/avtobereke/current
 EnvironmentFile=/etc/avtobereke/avtobereke.env
 Environment=DJANGO_SETTINGS_MODULE=core.settings.production
+ExecStartPre=/srv/avtobereke/venv/bin/python manage.py ensure_superuser
 ExecStart=/srv/avtobereke/venv/bin/gunicorn --config /srv/avtobereke/current/deploy/gunicorn.conf.py core.wsgi:application
 ExecReload=/bin/kill -s HUP $MAINPID
 KillMode=mixed
