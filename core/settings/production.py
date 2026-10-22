@@ -24,6 +24,11 @@ if not ALLOWED_HOSTS:
 if "*" in ALLOWED_HOSTS:
     raise ImproperlyConfigured("Do not use a wildcard in production DJANGO_ALLOWED_HOSTS.")
 
+if not os.getenv("CLOUDINARY_URL"):
+    raise ImproperlyConfigured(
+        "Set CLOUDINARY_URL to a persistent media storage service."
+    )
+
 CORS_ALLOWED_ORIGINS = [
     o.strip()
     for o in os.getenv("DJANGO_CORS_ALLOWED_ORIGINS", "").split(",")

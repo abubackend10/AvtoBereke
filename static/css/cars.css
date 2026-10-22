@@ -1,0 +1,18 @@
+/* Catalog filters and pagination */
+.filter{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;align-items:end;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh)}
+.filter__field--wide{grid-column:span 2}
+.filter label{display:block;font-size:.74rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.filter input,.filter select{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;font-size:.92rem;outline:0;transition:.2s}
+.filter input:focus,.filter select:focus{border-color:var(--accent);background:var(--bg)}
+.catalog-filter .range-inputs{display:flex;gap:6px}
+.catalog-filter .filter__actions{grid-column:1 / -1;display:flex;gap:12px;margin-top:10px}
+.found{margin:22px 0 16px;color:var(--muted)}.found b{color:var(--accent)}
+.catalog-found{margin-top:20px}
+.pagination{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:28px}
+.pagination__status{color:var(--muted);font-size:.92rem}
+.empty-catalog-card--catalog{margin-top:30px}
+
+@media(max-width:520px){
+  .filter{grid-template-columns:1fr 1fr}
+  .filter__field--wide,.filter .btn{grid-column:span 2}
+}

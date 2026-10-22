@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django_ckeditor_5.fields import CKEditor5Field
+from .images import optimize_image_field
 
 class SingletonModel(models.Model):
     class Meta:
@@ -51,6 +52,10 @@ class SiteSettings(SingletonModel):
     class Meta:
         verbose_name = "01) Настройки сайта"
         verbose_name_plural = "01) Настройки сайта"
+
+    def save(self, *args, **kwargs):
+        optimize_image_field(self.logo)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return "Глобальные настройки сайта"
@@ -310,6 +315,7 @@ class Car(models.Model):
                 counter += 1
             self.slug = slug
             
+        optimize_image_field(self.image)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -321,6 +327,10 @@ class Car(models.Model):
 class CarImage(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='gallery', verbose_name="Автомобиль")
     image = models.ImageField(upload_to='cars/gallery/', verbose_name="Фото галереи")
+
+    def save(self, *args, **kwargs):
+        optimize_image_field(self.image)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Фото для {self.car.name}"

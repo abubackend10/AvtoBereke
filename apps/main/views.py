@@ -1,16 +1,22 @@
 from datetime import datetime
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from .models import Car, Brand, BodyType, GearboxType, FuelType, DriveType
 
 
 def home(request):
     """Главная страница сайта"""
-    recommended_cars = Car.objects.filter(is_recommended=True).select_related(
+    recommended_cars = list(Car.objects.filter(is_recommended=True).select_related(
         'brand', 'body', 'gearbox', 'fuel', 'drive'
-    ).order_by('-created_at')
+    ).order_by('-created_at'))
+    recommended_car_pages = [
+        recommended_cars[index:index + 4]
+        for index in range(0, len(recommended_cars), 4)
+    ]
     
     context = {
         'recommended_cars': recommended_cars,
+        'recommended_car_pages': recommended_car_pages,
     }
     return render(request, "index.html", context)
 
@@ -69,8 +75,15 @@ def cars(request):
     if engine_volume and engine_volume.strip():
         cars_list = cars_list.filter(engine__icontains=engine_volume.strip())
 
+    paginator = Paginator(cars_list, 12)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    query_params = request.GET.copy()
+    query_params.pop('page', None)
+
     context = {
-        'cars': cars_list,
+        'cars': page_obj.object_list,
+        'page_obj': page_obj,
+        'query_params': query_params,
         'all_brands': Brand.objects.all(),
         'all_bodies': BodyType.objects.all(),
         'all_gearboxes': GearboxType.objects.all(),

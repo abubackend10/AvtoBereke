@@ -1,28 +1,21 @@
-// ==========================================
-// 1. Мобильное меню
-// ==========================================
-const burger = document.getElementById('burger');
-const nav = document.getElementById('nav');
+// Shared image loading
+const imageSkeletons = document.querySelectorAll('.image-loading .image-skeleton');
 
-if (burger && nav) {
-  burger.addEventListener('click', () => {
-    const isOpen = burger.classList.toggle('open');
-    nav.classList.toggle('open', isOpen);
-    burger.setAttribute('aria-expanded', String(isOpen));
-  });
-
-  nav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      burger.classList.remove('open');
-      nav.classList.remove('open');
-      burger.setAttribute('aria-expanded', 'false');
-    });
-  });
+function finishImageLoading(event) {
+  if (!event.target.matches('.image-skeleton')) return;
+  event.target.closest('.image-loading')?.classList.remove('image-loading');
 }
 
-// ==========================================
-// 2. Эффект скролла шапки (Header)
-// ==========================================
+document.addEventListener('load', finishImageLoading, true);
+document.addEventListener('error', finishImageLoading, true);
+
+imageSkeletons.forEach(image => {
+  if (image.complete) {
+    image.closest('.image-loading')?.classList.remove('image-loading');
+  }
+});
+
+// Header scroll state
 const header = document.querySelector('.header');
 if (header) {
   const updateHeader = () => header.classList.toggle('is-scrolled', window.scrollY > 16);
@@ -30,73 +23,77 @@ if (header) {
   window.addEventListener('scroll', updateHeader, { passive: true });
 }
 
-// ==========================================
-// 3. Анимированные счётчики (сохраняют все знаки: +, /, %, и т.д.)
-// ==========================================
-const counters = document.querySelectorAll('.counter');
-if (counters.length) {
-  const run = el => {
-    // Берём исходный текст из data-target или из самoго элемента (например, "500+" или "24/7")
-    const originalText = (el.dataset.target || el.textContent).trim();
-    
-    // Выделяем первое найденное число
-    const match = originalText.match(/\d+/);
-    if (!match) return; // Если чисел нет, ничего не анимируем
+// Currency and language settings
+const CURRENCIES = {
+  usd: { symbol: '$', rate: 1, pos: 'before' },
+  kgs: { symbol: 'сом', rate: 89.5, pos: 'after' },
+  rub: { symbol: '₽', rate: 92, pos: 'after' }
+};
 
-    const target = Number(match[0]);
-    const numberIndex = match.index;
-    const numberLength = match[0].length;
+const EXCHANGE_RATE_CACHE_KEY = 'avtobereke_exchange_rates';
+const EXCHANGE_RATE_CACHE_TTL = 24 * 60 * 60 * 1000;
 
-    // Разбиваем строку на части: ДО числа и ПОСЛЕ числа
-    const prefix = originalText.slice(0, numberIndex);
-    const suffix = originalText.slice(numberIndex + numberLength);
+const getSavedCurrency = () => localStorage.getItem('avtobereke_currency') || 'usd';
 
-    const duration = 1800;
-    const start = performance.now();
+function setExchangeRates(rates) {
+  CURRENCIES.kgs.rate = rates.KGS;
+  CURRENCIES.rub.rate = rates.RUB;
+}
 
-    const step = t => {
-      const progress = Math.min((t - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 4);
-      const currentNumber = progress === 1 ? target : Math.floor(target * eased);
-      
-      // Склеиваем префикс + анимированное число + суффикс (знаки)
-      el.textContent = `${prefix}${currentNumber.toLocaleString('ru-RU')}${suffix}`;
-      
-      if (progress < 1) requestAnimationFrame(step);
+function getCachedExchangeRates() {
+  try {
+    const cached = JSON.parse(localStorage.getItem(EXCHANGE_RATE_CACHE_KEY) || 'null');
+    if (
+      !cached ||
+      cached.base !== 'USD' ||
+      !Number.isFinite(cached.updatedAt) ||
+      !Number.isFinite(cached.rates?.KGS) ||
+      !Number.isFinite(cached.rates?.RUB) ||
+      cached.rates.KGS <= 0 ||
+      cached.rates.RUB <= 0
+    ) {
+      return null;
+    }
+
+    return {
+      rates: cached.rates,
+      isFresh: Date.now() - cached.updatedAt >= 0 && Date.now() - cached.updatedAt < EXCHANGE_RATE_CACHE_TTL
     };
-
-    requestAnimationFrame(step);
-  };
-
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    counters.forEach(counter => {
-      counter.textContent = counter.dataset.target || counter.textContent;
-    });
-  } else if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          run(entry.target);
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.4 });
-    counters.forEach(counter => io.observe(counter));
-  } else {
-    counters.forEach(run);
+  } catch (error) {
+    console.warn('Не удалось прочитать сохранённый курс валют:', error);
+    return null;
   }
 }
 
-// ==========================================
-// 4. Пересчёт Валют и Переключение Языков
-// ==========================================
-const CURRENCIES = {
-  usd: { code: 'USD', symbol: '$', rate: 1, pos: 'before', ph: '30,000' },
-  kgs: { code: 'KGS', symbol: '⃀', rate: 89.5, pos: 'after', ph: '2,500,000' },
-  rub: { code: 'RUB', symbol: '₽', rate: 92, pos: 'after', ph: '2,500,000' }
-};
+async function refreshExchangeRates() {
+  try {
+    const response = await fetch('https://open.er-api.com/v6/latest/USD', { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
 
-const getSavedCurrency = () => localStorage.getItem('avtobereke_currency') || 'usd';
+    const data = await response.json();
+    const rates = { KGS: Number(data.rates?.KGS), RUB: Number(data.rates?.RUB) };
+    if (data.result !== 'success' || data.base_code !== 'USD' || rates.KGS <= 0 || rates.RUB <= 0 || !Number.isFinite(rates.KGS) || !Number.isFinite(rates.RUB)) {
+      throw new Error('Источник вернул некорректные курсы USD/KGS/RUB');
+    }
+
+    setExchangeRates(rates);
+    applyCurrency(getSavedCurrency());
+
+    try {
+      localStorage.setItem(EXCHANGE_RATE_CACHE_KEY, JSON.stringify({
+        base: 'USD',
+        rates,
+        updatedAt: Date.now()
+      }));
+    } catch (error) {
+      console.warn('Не удалось сохранить курс валют в кэш браузера:', error);
+    }
+  } catch (error) {
+    console.error('Не удалось обновить курсы валют; используются последние доступные значения:', error);
+  }
+}
 
 const getCurrentLanguage = () => {
   const pathSegments = window.location.pathname.split('/');
@@ -118,28 +115,13 @@ function updateSettingsBtnLabel() {
   const lbl = document.getElementById('settingsBtnText');
   if (lbl) {
     const c = (getSavedCurrency() || 'usd').toUpperCase();
-    const l = getCurrentLanguage().toUpperCase();
+    const currentLanguage = getCurrentLanguage();
+    const l = currentLanguage === 'ky' ? 'KG' : currentLanguage.toUpperCase();
     lbl.textContent = `${c} · ${l}`;
   }
 }
 
-let onCurrencyChangeCallback = null;
-
 function applyCurrency(currKey) {
-  const curr = CURRENCIES[currKey] || CURRENCIES.usd;
-
-  // Обновляем карточки авто
-  document.querySelectorAll('.car').forEach(car => {
-    const rawUsd = Number(car.dataset.price);
-    if (!isNaN(rawUsd)) {
-      const priceEl = car.querySelector('.car__price') || car.querySelector('.car__foot strong');
-      if (priceEl) {
-        priceEl.textContent = formatPrice(rawUsd, currKey);
-      }
-    }
-  });
-
-  // Обновляем элементы с data-usd (на странице авто)
   document.querySelectorAll('[data-usd]').forEach(el => {
     const rawUsd = Number(el.dataset.usd);
     if (!isNaN(rawUsd)) {
@@ -153,81 +135,84 @@ function applyCurrency(currKey) {
   });
 
   updateSettingsBtnLabel();
-
-  if (typeof onCurrencyChangeCallback === 'function') {
-    onCurrencyChangeCallback();
-  }
 }
 
 function highlightActiveLanguage() {
-  const currentLang = getCurrentLanguage();
-  document.querySelectorAll('#langOptions .settings-opt').forEach(btn => {
-    btn.classList.toggle('is-active', btn.dataset.lang === currentLang);
+  const currentLanguage = getCurrentLanguage();
+  document.querySelectorAll('#langOptions .settings-opt').forEach(button => {
+    button.classList.toggle('is-active', button.dataset.lang === currentLanguage);
   });
 }
 
-// ==========================================
-// 5. Модальное окно настроек
-// ==========================================
+const languageButtons = document.querySelectorAll('#langOptions .settings-opt');
+const selectedLanguageInput = document.getElementById('selectedLanguageInput');
+const languageForm = document.getElementById('langForm');
+
+languageButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    languageButtons.forEach(item => item.classList.remove('is-active'));
+    button.classList.add('is-active');
+    if (selectedLanguageInput) {
+      selectedLanguageInput.value = button.dataset.lang;
+    }
+  });
+});
+
+document.getElementById('saveSettingsBtn')?.addEventListener('click', () => {
+  languageForm?.submit();
+});
+
 const settingsModal = document.getElementById('settingsModal');
 
 const openModal = () => {
-  if (settingsModal) {
-    settingsModal.classList.add('is-open');
-    settingsModal.setAttribute('aria-hidden', 'false');
-  }
+  if (!settingsModal) return;
+  settingsModal.classList.add('is-open');
+  settingsModal.setAttribute('aria-hidden', 'false');
 };
 
 const closeModal = () => {
-  if (settingsModal) {
-    settingsModal.classList.remove('is-open');
-    settingsModal.setAttribute('aria-hidden', 'true');
-  }
+  if (!settingsModal) return;
+  settingsModal.classList.remove('is-open');
+  settingsModal.setAttribute('aria-hidden', 'true');
 };
 
-document.addEventListener('click', e => {
-  if (e.target.closest('#openSettingsBtn') || e.target.closest('#openSettingsBtnMobile') || e.target.closest('[data-open-settings]')) {
-    e.preventDefault();
+document.addEventListener('click', event => {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+
+  if (target.closest('#openSettingsBtn, #openSettingsBtnMobile, [data-open-settings]')) {
+    event.preventDefault();
     openModal();
   }
-  if (e.target.closest('#closeSettingsBtn') || e.target.closest('#saveSettingsBtn') || e.target.closest('#settingsModalBackdrop')) {
-    e.preventDefault();
+
+  if (target.closest('#closeSettingsBtn, #saveSettingsBtn, #settingsModalBackdrop')) {
+    event.preventDefault();
     closeModal();
   }
 });
 
-window.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && settingsModal && settingsModal.classList.contains('is-open')) {
+window.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && settingsModal?.classList.contains('is-open')) {
     closeModal();
   }
 });
 
-// Переключение языка через URL-префиксы Django (/ru/, /ky/, /uz/)
-document.querySelectorAll('#langOptions .settings-opt').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const lang = btn.dataset.lang;
-    const currentPath = window.location.pathname;
-    const pathSegments = currentPath.split('/');
-
-    if (['ru', 'ky', 'uz'].includes(pathSegments[1])) {
-      pathSegments[1] = lang;
-    } else {
-      pathSegments.splice(1, 0, lang);
-    }
-    window.location.href = pathSegments.join('/') + window.location.search;
+document.querySelectorAll('#currOptions .settings-opt').forEach(button => {
+  button.addEventListener('click', () => {
+    const currency = button.dataset.curr;
+    if (!currency) return;
+    localStorage.setItem('avtobereke_currency', currency);
+    applyCurrency(currency);
   });
 });
 
-// Переключение валюты
-document.querySelectorAll('#currOptions .settings-opt').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const curr = btn.dataset.curr;
-    localStorage.setItem('avtobereke_currency', curr);
-    applyCurrency(curr);
-  });
-});
-
-// Инициализация при загрузке страницы
 highlightActiveLanguage();
 updateSettingsBtnLabel();
+const cachedExchangeRates = getCachedExchangeRates();
+if (cachedExchangeRates) {
+  setExchangeRates(cachedExchangeRates.rates);
+}
 applyCurrency(getSavedCurrency());
+if (!cachedExchangeRates || !cachedExchangeRates.isFresh) {
+  refreshExchangeRates();
+}

@@ -1,7 +1,15 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load static i18n %}
 
 {% block title %}{% trans "Контакты" %} — AvtoBereke{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contacts.css' %}?v=20261022-page-split">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/contacts.js' %}?v=20261022-page-split" defer></script>
+{% endblock %}
 
 {% block content %}
 <!-- Шапка страницы -->
@@ -96,8 +104,9 @@
     </div>
 
     <!-- Карта -->
-    <div class="map">
+    <div class="map{% if site_settings.map_iframe or site_settings.address %} map--loading{% endif %}">
       {% if site_settings.map_iframe %}
+        <div class="map__skeleton" aria-hidden="true"></div>
         {% if "<iframe" in site_settings.map_iframe %}
           {{ site_settings.map_iframe|safe }}
         {% else %}
@@ -109,6 +118,7 @@
           </iframe>
         {% endif %}
       {% elif site_settings.address %}
+        <div class="map__skeleton" aria-hidden="true"></div>
         <iframe 
           title="{% trans 'Карта' %}" 
           loading="lazy" 

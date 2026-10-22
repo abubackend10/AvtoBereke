@@ -1,0 +1,27 @@
+{% load static humanize i18n %}
+
+<article class="car">
+  <a class="car__img image-loading" href="{% url 'car_detail' slug=car.slug %}">
+    <img class="image-skeleton" src="{% if car.image %}{{ car.image.url }}{% else %}{% static 'img/car-placeholder.jpg' %}{% endif %}" alt="{{ car.name }}" loading="lazy" decoding="async">
+    <span class="car__year">{{ car.year }}</span>
+  </a>
+
+  <div class="car__body">
+    <a href="{% url 'car_detail' slug=car.slug %}">
+      <h3>{% if show_brand and car.brand %}{{ car.brand.name }} {% endif %}{{ car.name }}</h3>
+    </a>
+
+    <ul class="car__specs">
+      <li><i class="fa-solid fa-gauge-high"></i> {{ car.mileage }}</li>
+      <li><i class="fa-solid fa-gas-pump"></i> <span class="spec-fuel">{% if car.fuel %}{{ car.fuel.name|default:car.fuel }}{% else %}-{% endif %}</span></li>
+      <li><i class="fa-solid fa-gears"></i> <span class="spec-gb">{% if car.gearbox %}{{ car.gearbox.name|default:car.gearbox }}{% else %}-{% endif %}</span></li>
+    </ul>
+
+    <div class="car__foot">
+      <strong class="car__price" data-usd="{{ car.price }}">${{ car.price|intcomma }}</strong>
+      <div class="car__actions-group">
+        <a class="btn btn--sm" href="{% url 'car_detail' slug=car.slug %}">{% trans "Подробнее" %}</a>
+      </div>
+    </div>
+  </div>
+</article>

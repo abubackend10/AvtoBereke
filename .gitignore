@@ -9,6 +9,8 @@ __pycache__/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+/back_media/
+/back_static/
 СМИ
 
 # Если ваш процесс сборки включает запуск collectstatic, то вам, вероятно, не нужно или нецелесообразно включать staticfiles/

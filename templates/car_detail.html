@@ -3,6 +3,14 @@
 
 {% block title %}{{ car.name }} {{ car.year }} — {% trans "купить в AvtoBereke" %}{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/car_detail.css' %}?v=20261022-page-split">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/car_detail.js' %}?v=20261022-page-split" defer></script>
+{% endblock %}
+
 {% block content %}
 <section class="car-detail-page">
   <div class="container">
@@ -63,11 +71,11 @@
         
         <!-- Галерея фото -->
         <div class="detail-gallery">
-          <div class="detail-gallery__hero">
+          <div class="detail-gallery__hero image-loading">
             {% if car.image %}
-              <img id="mainGalleryImg" src="{{ car.image.url }}" alt="{{ car.name }}">
+              <img id="mainGalleryImg" class="image-skeleton" src="{{ car.image.url }}" alt="{{ car.name }}" fetchpriority="high" decoding="async">
             {% else %}
-              <img id="mainGalleryImg" src="{% static 'img/car-placeholder.jpg' %}" alt="{{ car.name }}">
+              <img id="mainGalleryImg" class="image-skeleton" src="{% static 'img/car-placeholder.jpg' %}" alt="{{ car.name }}" fetchpriority="high" decoding="async">
             {% endif %}
             <span class="detail-gallery__year-tag">{{ car.year }}</span>
           </div>
@@ -75,19 +83,19 @@
           <div class="detail-gallery__thumbs" id="galleryThumbs">
             <!-- Превью главного фото -->
             {% if car.image %}
-            <button type="button" class="thumb-btn is-active" data-img-url="{{ car.image.url }}">
-              <img src="{{ car.image.url }}" alt="{{ car.name }}">
+            <button type="button" class="thumb-btn image-loading is-active" data-img-url="{{ car.image.url }}">
+              <img class="image-skeleton" src="{{ car.image.url }}" alt="{{ car.name }}" loading="lazy" decoding="async">
             </button>
             {% else %}
-            <button type="button" class="thumb-btn is-active" data-img-url="{% static 'img/car-placeholder.jpg' %}">
-              <img src="{% static 'img/car-placeholder.jpg' %}" alt="{{ car.name }}">
+            <button type="button" class="thumb-btn image-loading is-active" data-img-url="{% static 'img/car-placeholder.jpg' %}">
+              <img class="image-skeleton" src="{% static 'img/car-placeholder.jpg' %}" alt="{{ car.name }}" loading="lazy" decoding="async">
             </button>
             {% endif %}
 
             <!-- Превью из галереи -->
             {% for photo in car.gallery.all %}
-            <button type="button" class="thumb-btn" data-img-url="{{ photo.image.url }}">
-              <img src="{{ photo.image.url }}" alt="{{ car.name }}">
+            <button type="button" class="thumb-btn image-loading" data-img-url="{{ photo.image.url }}">
+              <img class="image-skeleton" src="{{ photo.image.url }}" alt="{{ car.name }}" loading="lazy" decoding="async">
             </button>
             {% endfor %}
           </div>
@@ -105,7 +113,7 @@
 
         <!-- Описание автомобиля (выводится только при наличии текста) -->
         {% if car.description %}
-        <div class="detail-box">
+        <div class="detail-box detail-description">
           <h2 class="detail-box__title"><i class="fa-solid fa-file-lines"></i> <span>{% trans "Описание автомобиля от владельца" %}</span></h2>
           <div class="detail-box__content">
             <div class="desc-text">{{ car.description|safe }}</div>
@@ -114,7 +122,7 @@
         {% endif %}
 
         <!-- Преимущества салона -->
-        <div class="detail-box">
+        <div class="detail-box detail-benefits">
           <h2 class="detail-box__title"><i class="fa-solid fa-shield-halved"></i> <span>{% trans "Преимущества покупки в AvtoBereke" %}</span></h2>
           <div class="benefits-grid">
             <div class="bcard">
@@ -146,7 +154,7 @@
       <aside class="detail-sidebar">
         
         <!-- Таблица характеристик -->
-        <div class="detail-box">
+        <div class="detail-box detail-specs">
           <h2 class="detail-box__title"><i class="fa-solid fa-sliders"></i> <span>{% trans "Характеристики" %}</span></h2>
           <dl class="specs-table">
             <div class="specs-row"><dt>{% trans "Марка" %}</dt><dd><b>{{ car.brand }}</b></dd></div>
@@ -167,7 +175,7 @@
 
         <!-- Комплектация и опции -->
         {% if car.features.all %}
-        <div class="detail-box">
+        <div class="detail-box detail-features">
           <h2 class="detail-box__title"><i class="fa-solid fa-list-check"></i> <span>{% trans "Комплектация и опции" %}</span></h2>
           <ul class="features-list">
             {% for feature in car.features.all %}
@@ -221,30 +229,9 @@
     <div class="similar-cars-section">
       <h2 class="title">{% trans "Другие автомобили в наличии" %}</h2>
       <div class="grid">
-        {% for sim in similar_cars %}
-        <article class="car" data-brand="{{ sim.brand }}" data-price="{{ sim.price }}" data-year="{{ sim.year }}" data-fuel="{{ sim.fuel }}" data-gearbox="{{ sim.gearbox }}" data-name="{{ sim.name }}">
-          <a class="car__img" href="{% url 'car_detail' slug=sim.slug %}">
-            <img src="{% if sim.image %}{{ sim.image.url }}{% else %}{% static 'img/car-placeholder.jpg' %}{% endif %}" alt="{{ sim.name }}">
-            <span class="car__year">{{ sim.year }}</span>
-          </a>
-          <div class="car__body">
-            <a href="{% url 'car_detail' slug=sim.slug %}">
-              <h3>{{ sim.name }}</h3>
-            </a>
-            <ul class="car__specs">
-              <li><i class="fa-solid fa-gauge-high"></i> {{ sim.mileage }}</li>
-              <li><i class="fa-solid fa-gas-pump"></i> <span class="spec-fuel">{{ sim.fuel }}</span></li>
-              <li><i class="fa-solid fa-gears"></i> <span class="spec-gb">{{ sim.gearbox }}</span></li>
-            </ul>
-            <div class="car__foot">
-              <strong class="car__price" data-usd="{{ sim.price }}">${{ sim.price|intcomma }}</strong>
-              <div class="car__actions-group">
-                <a class="btn btn--sm" href="{% url 'car_detail' slug=sim.slug %}">{% trans "Подробнее" %}</a>
-              </div>
-            </div>
-          </div>
-        </article>
-        {% endfor %}
+      {% for sim in similar_cars %}
+      {% include "partials/car_card.html" with car=sim %}
+      {% endfor %}
       </div>
     </div>
     {% endif %}
@@ -252,22 +239,4 @@
   </div>
 </section>
 
-<!-- Скрипт переключения фото в галерее -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const mainImg = document.getElementById('mainGalleryImg');
-    const thumbBtns = document.querySelectorAll('.thumb-btn');
-
-    thumbBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const newUrl = this.getAttribute('data-img-url');
-            if (newUrl && mainImg) {
-                mainImg.src = newUrl;
-            }
-            thumbBtns.forEach(b => b.classList.remove('is-active'));
-            this.classList.add('is-active');
-        });
-    });
-});
-</script>
 {% endblock %}

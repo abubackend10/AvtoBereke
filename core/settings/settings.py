@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     *THEME_APPS,
     *LIBRARY_APPS, 
     *DJANGO_APPS,
+    'cloudinary_storage',
+    'cloudinary',
     *MY_APPS,
 ]
 
@@ -70,6 +72,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
+                'apps.main.context_processors.site_settings',
             ],
         },
     },
@@ -138,6 +141,12 @@ STORAGES = {
     },
 }
 
+CLOUDINARY_STORAGE = {"SECURE": True}
+if os.getenv("CLOUDINARY_URL"):
+    STORAGES["default"] = {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    }
+
 
 CKEDITOR_5_CONFIGS = {
     'extends': {
@@ -187,9 +196,4 @@ LOCALE_PATHS = [
 ]
 
 
-IS_PRODUCTION = os.getenv("PRODUCTION", "False").lower() == "true"
-
-if IS_PRODUCTION:
-    from core.settings.production import *
-else:
-    from core.settings.development import *
+from core.settings.development import *

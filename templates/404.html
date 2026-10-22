@@ -1,7 +1,11 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load static i18n %}
 
 {% block title %}{% trans "Страница не найдена" %} — AvtoBereke{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/errors.css' %}?v=20261022-page-split">
+{% endblock %}
 
 {% block content %}
 <section class="error-page">

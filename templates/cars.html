@@ -3,6 +3,10 @@
 
 {% block title %}{% trans "Автомобили" %} — AvtoBereke{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cars.css' %}?v=20261022-page-split">
+{% endblock %}
+
 {% block content %}
 <section class="page-head">
   <div class="container">
@@ -37,7 +41,7 @@
       <!-- 3. Цена от / до -->
       <div class="filter__field">
         <label>{% trans "Цена от / до ($)" %}</label>
-        <div class="range-inputs" style="display: flex; gap: 6px;">
+        <div class="range-inputs">
           <input type="number" name="price_from" placeholder="{% trans 'от' %}" value="{{ request.GET.price_from }}" min="0">
           <input type="number" name="price_to" placeholder="{% trans 'до' %}" value="{{ request.GET.price_to }}" min="0">
         </div>
@@ -46,7 +50,7 @@
       <!-- 4. Год выпуска от / до -->
       <div class="filter__field">
         <label>{% trans "Год выпуска (от / до)" %}</label>
-        <div class="range-inputs" style="display: flex; gap: 6px;">
+        <div class="range-inputs">
           <select name="year_from">
             <option value="">{% trans "от" %}</option>
             {% for y in years_list %}
@@ -109,7 +113,7 @@
       <!-- 9. Пробег от / до -->
       <div class="filter__field">
         <label>{% trans "Пробег от / до (км)" %}</label>
-        <div class="range-inputs" style="display: flex; gap: 6px;">
+        <div class="range-inputs">
           <input type="number" name="mileage_from" placeholder="{% trans 'от' %}" value="{{ request.GET.mileage_from }}" min="0">
           <input type="number" name="mileage_to" placeholder="{% trans 'до' %}" value="{{ request.GET.mileage_to }}" min="0">
         </div>
@@ -131,7 +135,7 @@
       </div>
 
       <!-- Кнопки управления -->
-      <div class="filter__actions" style="grid-column: 1 / -1; display: flex; gap: 12px; margin-top: 10px;">
+      <div class="filter__actions">
         <button type="submit" class="btn btn--primary">
           <i class="fa-solid fa-magnifying-glass"></i> {% trans "Показать" %}
         </button>
@@ -142,41 +146,40 @@
       </div>
     </form>
 
-    <p class="found" style="margin-top: 20px;">
-      <span>{% trans "Найдено:" %}</span> <b id="count">{{ cars|length }}</b>
+    <p class="found catalog-found">
+      <span>{% trans "Найдено:" %}</span> <b id="count">{{ page_obj.paginator.count }}</b>
     </p>
 
     <!-- Сетка автомобилей -->
     {% if cars %}
     <div class="grid" id="grid">
       {% for car in cars %}
-      <article class="car">
-        <a class="car__img" href="{% url 'car_detail' slug=car.slug %}">
-          <img src="{% if car.image %}{{ car.image.url }}{% else %}{% static 'img/car-placeholder.jpg' %}{% endif %}" alt="{{ car.name }}">
-          <span class="car__year">{{ car.year }}</span>
-        </a>
-        <div class="car__body">
-          <a href="{% url 'car_detail' slug=car.slug %}">
-            <h3>{% if car.brand %}{{ car.brand.name }} {% endif %}{{ car.name }}</h3>
-          </a>
-          <ul class="car__specs">
-            <li><i class="fa-solid fa-gauge-high"></i> {{ car.mileage }}</li>
-            <li><i class="fa-solid fa-gas-pump"></i> <span class="spec-fuel">{% if car.fuel %}{{ car.fuel.name }}{% else %}-{% endif %}</span></li>
-            <li><i class="fa-solid fa-gears"></i> <span class="spec-gb">{% if car.gearbox %}{{ car.gearbox.name }}{% else %}-{% endif %}</span></li>
-          </ul>
-          <div class="car__foot">
-            <strong class="car__price" data-usd="{{ car.price }}">${{ car.price|intcomma }}</strong>
-            <div class="car__actions-group">
-              <a class="btn btn--sm" href="{% url 'car_detail' slug=car.slug %}">{% trans "Подробнее" %}</a>
-            </div>
-          </div>
-        </div>
-      </article>
+      {% include "partials/car_card.html" with car=car show_brand=True %}
       {% endfor %}
     </div>
 
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="pagination" aria-label="{% trans 'Страницы каталога' %}">
+      {% if page_obj.has_previous %}
+      <a class="btn btn--ghost" href="?{{ query_params.urlencode }}{% if query_params %}&amp;{% endif %}page={{ page_obj.previous_page_number }}" rel="prev">
+        {% trans "Назад" %}
+      </a>
+      {% endif %}
+
+      <span class="pagination__status">
+        {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}Страница {{ current }} из {{ total }}{% endblocktrans %}
+      </span>
+
+      {% if page_obj.has_next %}
+      <a class="btn btn--ghost" href="?{{ query_params.urlencode }}{% if query_params %}&amp;{% endif %}page={{ page_obj.next_page_number }}" rel="next">
+        {% trans "Далее" %}
+      </a>
+      {% endif %}
+    </nav>
+    {% endif %}
+
     {% else %}
-    <div class="empty-catalog-card" style="margin-top: 30px;">
+    <div class="empty-catalog-card empty-catalog-card--catalog">
       <div class="empty-catalog-card__icon">
         <i class="fa-solid fa-key"></i>
       </div>

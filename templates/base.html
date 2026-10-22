@@ -15,7 +15,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261022-page-split">
+  {% block extra_css %}{% endblock %}
 </head>
 <body>
 
@@ -50,7 +51,7 @@
       <button class="settings-btn" id="openSettingsBtn" type="button" aria-label="{% trans 'Настройки' %}" title="{% trans 'Настройки' %}">
         <i class="fa-solid fa-gear"></i>
         <!-- Динамический вывод текущего языка (RU, KG, UZ) -->
-        <span class="settings-btn__text" id="settingsBtnText">USD · {{ LANGUAGE_CODE|upper }}</span>
+        <span class="settings-btn__text" id="settingsBtnText">USD · {% if LANGUAGE_CODE == 'ky' %}KG{% else %}{{ LANGUAGE_CODE|upper }}{% endif %}</span>
       </button>
 
       <a href="https://wa.me/{{ site_settings.whatsapp_num }}" class="header__wa" target="_blank" rel="noopener" aria-label="WhatsApp">
@@ -206,10 +207,10 @@
             <i class="fa-solid fa-check settings-opt__check"></i>
           </button>
           <button type="button" class="settings-opt" data-curr="kgs">
-            <span class="settings-opt__badge">⃀</span>
+            <span class="settings-opt__badge settings-opt__badge--som" aria-label="{% trans 'Кыргыз сом' %}">⃀</span>
             <div class="settings-opt__details">
               <span class="settings-opt__name">{% trans "Кыргыз сом" %}</span>
-              <span class="settings-opt__code">KGS (⃀)</span>
+              <span class="settings-opt__code">KGS</span>
             </div>
             <i class="fa-solid fa-check settings-opt__check"></i>
           </button>
@@ -231,74 +232,7 @@
   </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', async function () {
-    // Выбор языка в модальном окне
-    const langBtns = document.querySelectorAll('#langOptions .settings-opt');
-    const langInput = document.getElementById('selectedLanguageInput');
-    const langForm = document.getElementById('langForm');
-
-    langBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            langBtns.forEach(b => b.classList.remove('is-active'));
-            this.classList.add('is-active');
-            if (langInput) {
-                langInput.value = this.getAttribute('data-lang');
-            }
-        });
-    });
-
-    let rates = {
-        KGS: 89.0,
-        RUB: 95.0
-    };
-
-    try {
-        const response = await fetch('https://api.frankfurter.app/latest?from=USD&to=KGS,RUB');
-        const data = await response.json();
-        if (data && data.rates) {
-            if (data.rates.KGS) rates.KGS = data.rates.KGS;
-            if (data.rates.RUB) rates.RUB = data.rates.RUB;
-        }
-    } catch (error) {
-        console.log('Не удалось загрузить курсы валют, используются дефолтные:', error);
-    }
-
-    function updatePrices() {
-        const currencySelector = document.getElementById('currencySelector') || document.querySelector('select[name="currency"]');
-        const currency = currencySelector ? currencySelector.value : 'USD';
-
-        const priceElements = document.querySelectorAll('.car__price, .detail-price');
-
-        priceElements.forEach(el => {
-            const usdPrice = parseFloat(el.getAttribute('data-usd'));
-            if (isNaN(usdPrice)) return;
-
-            if (currency === 'KGS') {
-                const kgsPrice = Math.round(usdPrice * rates.KGS);
-                el.innerHTML = kgsPrice.toLocaleString('ru-RU') + ' сом';
-            } else if (currency === 'RUB') {
-                const rubPrice = Math.round(usdPrice * rates.RUB);
-                el.innerHTML = rubPrice.toLocaleString('ru-RU') + ' ₽';
-            } else {
-                el.innerHTML = '$' + usdPrice.toLocaleString('ru-RU');
-            }
-        });
-    }
-
-    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
-    if (saveSettingsBtn) {
-        saveSettingsBtn.addEventListener('click', function () {
-            updatePrices();
-            if (langForm) {
-                langForm.submit(); // Отправляем форму смены языка Django
-            }
-        });
-    }
-    updatePrices();
-});
-</script>
-
-<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/main.js' %}?v=20261022-page-split" defer></script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -1,0 +1,16 @@
+/* Contacts */
+.contacts{display:grid;grid-template-columns:1fr 1.2fr;gap:30px}
+.contacts__list{display:grid;gap:12px;align-content:start}
+.ccard{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;transition:.2s;box-shadow:var(--sh)}
+a.ccard:hover{border-color:var(--accent);transform:translateX(4px)}
+.ccard>i{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:1.25rem;flex:none}
+.ccard span{display:block;font-size:.78rem;color:var(--muted)}
+.map{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);min-height:420px;background:var(--card)}
+.map__skeleton{position:absolute;inset:0;background:linear-gradient(110deg,#252830 8%,#353944 18%,#252830 33%);background-size:200% 100%;animation:image-shimmer 1.4s linear infinite}
+.map--loading iframe{opacity:0}
+.map iframe{position:relative;z-index:1;width:100%;height:100%;min-height:420px;border:0;transition:opacity .25s ease}
+@media(prefers-reduced-motion:reduce){.map__skeleton{animation:none;background:#30343c}}
+
+@media(max-width:900px){
+  .contacts{grid-template-columns:1fr}
+}

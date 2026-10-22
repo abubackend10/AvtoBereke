@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% load static humanize i18n %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}?v=20261022-page-split">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/home.js' %}?v=20261022-page-split" defer></script>
+{% endblock %}
+
 {% block content %}
 <!-- Главный экран (Hero) -->
 <section class="hero">
@@ -25,30 +33,21 @@
           <i class="fa-solid fa-arrow-right"></i>
         </a>
 
-        <a href="https://wa.me/{{ contact_settings.whatsapp_num }}" class="hero__contact" target="_blank" rel="noopener">
+        <a href="https://wa.me/{{ site_settings.whatsapp_num }}" class="hero__contact" target="_blank" rel="noopener">
           <i class="fa-brands fa-whatsapp"></i> 
           <span>{% trans "Получить консультацию" %}</span>
         </a>
       </div>
-
-      <!-- Статистика внутри Hero -->
-      <div class="hero__stats">
-        {% for stat in statistics_items|slice:":3" %}
-          <div class="hstat">
-            <i class="{{ stat.icon_class }}"></i>
-            <div>
-              <b class="counter" data-target="{{ stat.value }}">{{ stat.value }}</b>
-              <span>{{ stat.title }}</span>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
     </div>
   </div>
+  <a class="hero__scroll" href="#recommended" aria-label="{% trans 'Прокрутить к рекомендуемым автомобилям' %}">
+    <span>{% trans "Прокрутите вниз" %}</span>
+    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+  </a>
 </section>
 
 <!-- Секция рекомендуемых автомобилей -->
-<section class="section recommended-section">
+<section class="section recommended-section" id="recommended">
   <div class="container">
     
     <!-- Шапка секции -->
@@ -61,47 +60,42 @@
       </p>
     </div>
 
-    <!-- Сетка карточек -->
+    <!-- Листание рекомендуемых автомобилей страницами по четыре карточки -->
     {% if recommended_cars %}
-    <div class="grid" id="grid">
-      {% for car in recommended_cars %}
-      <article class="car" style="position: relative;">
-        
-        <!-- Бейдж рекомендации -->
-        <span class="car-badge" style="position: absolute; top: 12px; left: 12px; background: #2563eb; color: #fff; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 6px; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-          {% trans "ТОП" %}
-        </span>
-
-        <a class="car__img" href="{% url 'car_detail' slug=car.slug %}">
-          <img src="{% if car.image %}{{ car.image.url }}{% else %}{% static 'img/car-placeholder.jpg' %}{% endif %}" alt="{{ car.name }}">
-          <span class="car__year">{{ car.year }}</span>
-        </a>
-        
-        <div class="car__body">
-          <a href="{% url 'car_detail' slug=car.slug %}">
-            <h3>{% if car.brand %}{{ car.brand.name }} {% endif %}{{ car.name }}</h3>
-          </a>
-          
-          <ul class="car__specs">
-            <li><i class="fa-solid fa-gauge-high"></i> {{ car.mileage }}</li>
-            <li><i class="fa-solid fa-gas-pump"></i> <span class="spec-fuel">{% if car.fuel %}{{ car.fuel.name }}{% else %}-{% endif %}</span></li>
-            <li><i class="fa-solid fa-gears"></i> <span class="spec-gb">{% if car.gearbox %}{{ car.gearbox.name }}{% else %}-{% endif %}</span></li>
-          </ul>
-          
-          <div class="car__foot">
-            <strong class="car__price" data-usd="{{ car.price }}">${{ car.price|intcomma }}</strong>
-            <div class="car__actions-group">
-              <a class="btn btn--sm" href="{% url 'car_detail' slug=car.slug %}">{% trans "Подробнее" %}</a>
-            </div>
+    <div class="recommended-carousel" data-recommended-carousel>
+      <div class="recommended-carousel__viewport" data-carousel-viewport tabindex="0" aria-label="{% trans 'Страницы рекомендуемых автомобилей' %}">
+        <div class="recommended-carousel__track">
+          {% for page in recommended_car_pages %}
+          <div class="recommended-carousel__page grid" data-carousel-page>
+            {% for car in page %}
+            {% include "partials/car_card.html" with car=car show_brand=True %}
+            {% endfor %}
           </div>
+          {% endfor %}
         </div>
-      </article>
-      {% endfor %}
+      </div>
+      {% if recommended_car_pages|length > 1 %}
+      <div class="recommended-carousel__controls" aria-label="{% trans 'Навигация по рекомендуемым автомобилям' %}">
+        <button class="recommended-carousel__arrow" type="button" data-carousel-prev aria-label="{% trans 'Предыдущий блок' %}" disabled>
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <div class="recommended-carousel__dots" role="group" aria-label="{% trans 'Выбрать блок автомобилей' %}">
+          {% for page in recommended_car_pages %}
+          <button class="recommended-carousel__dot{% if forloop.first %} is-active{% endif %}" type="button" data-carousel-dot aria-label="{% blocktrans with number=forloop.counter %}Перейти к блоку {{ number }}{% endblocktrans %}"{% if forloop.first %} aria-current="true"{% endif %}>
+            <span></span>
+          </button>
+          {% endfor %}
+        </div>
+        <button class="recommended-carousel__arrow" type="button" data-carousel-next aria-label="{% trans 'Следующий блок' %}">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+      {% endif %}
     </div>
     
     {% else %}
-    <div class="empty-catalog-card" style="text-align: center; padding: 40px; background: #1f2937; border-radius: 12px;">
-      <p style="color: #9ca3af;">{% trans "Пока нет рекомендуемых автомобилей." %}</p>
+    <div class="empty-catalog-card empty-catalog-card--recommended">
+      <p>{% trans "Пока нет рекомендуемых автомобилей." %}</p>
     </div>
     {% endif %}
 

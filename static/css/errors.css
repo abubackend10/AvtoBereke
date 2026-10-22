@@ -1,0 +1,27 @@
+/* Error pages */
+.error-page{position:relative;isolation:isolate;display:grid;min-height:min(760px,calc(100svh - var(--header-height)));place-items:center;overflow:hidden;padding:72px 0;background:radial-gradient(ellipse at 50% 32%,rgba(36,107,254,.14),transparent 42%),var(--bg2);text-align:center}
+.error-page::before,.error-page::after{position:absolute;z-index:-1;width:320px;height:320px;border:1px solid rgba(255,255,255,.045);border-radius:50%;content:""}
+.error-page::before{top:8%;left:-210px}
+.error-page::after{right:-220px;bottom:4%;width:420px;height:420px}
+.error-page__inner{display:flex;align-items:center;flex-direction:column}
+.error-page__visual{position:relative;display:grid;width:178px;height:178px;place-items:center;margin-bottom:32px;border:1px solid rgba(36,107,254,.3);border-radius:50%;background:radial-gradient(circle,rgba(36,107,254,.18),rgba(36,107,254,.035) 68%);color:#8db0ff}
+.error-page__visual>i{font-size:4rem;filter:drop-shadow(0 8px 22px rgba(36,107,254,.35));animation:error-float 3.4s ease-in-out infinite}
+.error-page__orbit{position:absolute;inset:12px;border:1px dashed rgba(141,176,255,.3);border-radius:50%;animation:error-spin 28s linear infinite}
+.error-page__code{position:absolute;right:-27px;bottom:5px;padding:4px 11px;border:1px solid rgba(255,255,255,.1);border-radius:9px;background:var(--card);color:#fff;font-size:1.05rem;font-weight:800;letter-spacing:.04em}
+.error-page__visual--broken{border-color:rgba(255,138,36,.27);background:radial-gradient(circle,rgba(255,138,36,.13),rgba(36,107,254,.035) 68%);color:#ffad68}
+.error-page__visual--broken .error-page__orbit{border-color:rgba(255,173,104,.28)}
+.error-page__eyebrow{margin-bottom:10px;color:#8db0ff;font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.error-page h1{max-width:760px;font-size:clamp(2.2rem,6vw,4.5rem);font-weight:800;letter-spacing:-.055em;line-height:1.08}
+.error-page__text{max-width:570px;margin-top:17px;color:#b8bbc4;font-size:1rem;line-height:1.75}
+.error-page__actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}
+.error-page__actions .btn--ghost{background:rgba(255,255,255,.035)}
+@keyframes error-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes error-spin{to{transform:rotate(360deg)}}
+
+@media(max-width:520px){
+  .error-page{min-height:calc(100svh - var(--header-height));padding:52px 0}
+  .error-page__visual{width:146px;height:146px;margin-bottom:27px}
+  .error-page__visual>i{font-size:3.25rem}
+  .error-page__actions{width:100%;flex-direction:column}
+  .error-page__actions .btn{width:100%}
+}
