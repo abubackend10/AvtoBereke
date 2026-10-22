@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
+from django.views.generic import RedirectView
 from apps.main.views import page_not_found
 
 
@@ -14,6 +15,7 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
+    path('admin/', RedirectView.as_view(url='/admin/', query_string=True)),
     path('', include('apps.main.urls')),
     prefix_default_language=True,
 )

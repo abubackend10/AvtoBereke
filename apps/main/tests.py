@@ -22,6 +22,12 @@ class DevelopmentErrorPageTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
+    def test_admin_is_available_with_russian_language_prefix(self):
+        response = self.client.get("/ru/admin/")
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], "/admin/")
+
     def test_unknown_url_shows_custom_404_even_with_debug_enabled(self):
         with override_settings(DEBUG=True, SECURE_SSL_REDIRECT=False):
             response = self.client.get("/ru/does-not-exist/")
