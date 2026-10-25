@@ -72,6 +72,7 @@ coverage.xml
 
 # Переводы
 *.mo
+!locale/*/LC_MESSAGES/*.mo
 
 # Материалы по Django:
 

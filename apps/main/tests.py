@@ -17,6 +17,19 @@ from .views import cars
 
 
 class DevelopmentErrorPageTests(TestCase):
+    def test_language_prefix_translates_site_navigation(self):
+        translations = {
+            "/ky/": "Башкы баракча",
+            "/uz/": "Bosh sahifa",
+        }
+
+        for path, translated_text in translations.items():
+            with self.subTest(path=path):
+                response = self.client.get(path)
+
+                self.assertEqual(response.status_code, 200)
+                self.assertContains(response, translated_text)
+
     def test_admin_without_trailing_slash_stays_on_standard_path(self):
         response = self.client.get("/admin")
 
