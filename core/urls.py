@@ -9,6 +9,10 @@ from apps.main.views import page_not_found
 
 urlpatterns = [
     path('', include('apps.main.urls')),
+    path(
+        settings.ADMIN_URL.rstrip('/'),
+        RedirectView.as_view(url=f'/{settings.ADMIN_URL}', query_string=True),
+    ),
     path(settings.ADMIN_URL, admin.site.urls),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
     path('i18n/', include('django.conf.urls.i18n')),

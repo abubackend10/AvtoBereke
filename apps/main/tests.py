@@ -17,6 +17,12 @@ from .views import cars
 
 
 class DevelopmentErrorPageTests(TestCase):
+    def test_admin_without_trailing_slash_stays_on_standard_path(self):
+        response = self.client.get("/admin")
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], "/admin/")
+
     def test_admin_is_available_at_standard_path(self):
         response = self.client.get("/admin/")
 
